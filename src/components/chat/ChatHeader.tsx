@@ -1,5 +1,5 @@
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
-import { MoreVert } from "@mui/icons-material";
+import OptionsMenu from "./OptionsMenu";
 
 export default function ChatHeader() {
   return (
@@ -10,7 +10,7 @@ export default function ChatHeader() {
             <Typography variant="h6">Valera</Typography>
             <Typography sx={{ fontSize: "14px" }}>Was online 3 hours ago</Typography>
           </Box>
-          <MoreVert sx={{ color: "primary.dark", cursor: "pointer" }} />
+          <OptionsMenu />
         </Toolbar>
       </AppBar>
     </Box>
