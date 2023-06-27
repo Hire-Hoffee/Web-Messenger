@@ -1,5 +1,6 @@
 import { AppBar, Box, Toolbar, InputBase, styled } from "@mui/material";
-import { Search, Menu } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
+import MenuSlideBar from "./MenuSlideBar";
 
 const SearchBar = styled("div")(({ theme }) => ({
   position: "relative",
@@ -36,7 +37,7 @@ export default function SearchChatBar() {
     <Box>
       <AppBar position="static" variant="elevation">
         <Toolbar>
-          <Menu sx={{ color: "primary.dark", cursor: "pointer" }} />
+          <MenuSlideBar />
           <SearchBar>
             <SearchIconWrapper>
               <Search sx={{ color: "primary.dark" }} />
