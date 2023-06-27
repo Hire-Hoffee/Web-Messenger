@@ -1,5 +1,7 @@
 import { Grid, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import ChatHeader from "@/components/chat/ChatHeader";
+import SearchChatBar from "@/components/menu/SearchChatBar";
 
 const CustomBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -13,18 +15,12 @@ export default function Home() {
   return (
     <Grid container spacing={1} padding={0.5}>
       <Grid item md={3} sm={4}>
-        <CustomBox>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum modi sequi reiciendis ab
-          ullam recusandae, alias soluta totam eligendi molestias officia, nostrum nulla libero
-          harum nihil officiis fuga blanditiis. Consequuntur!
-        </CustomBox>
+        <SearchChatBar />
+        <CustomBox>Lorem ipsum dolor sit amet consectetur adipisicing elit.</CustomBox>
       </Grid>
       <Grid item md={9} sm={8}>
-        <CustomBox>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam nobis, doloremque
-          accusantium, doloribus cupiditate quisquam neque a saepe velit ratione consequuntur nisi
-          quia beatae corporis consectetur sint eaque quae in?
-        </CustomBox>
+        <ChatHeader />
+        <CustomBox>Lorem ipsum dolor sit amet consectetur adipisicing elit.</CustomBox>
       </Grid>
     </Grid>
   );

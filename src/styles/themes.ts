@@ -21,6 +21,29 @@ const lightTheme = createTheme({
   typography: {
     fontFamily: roboto.style.fontFamily,
   },
+  components: {
+    MuiAppBar: {
+      defaultProps: {
+        elevation: 2,
+      },
+      variants: [
+        {
+          props: { variant: "elevation" },
+          style: {
+            display: "flex",
+            justifyContent: "center",
+            cursor: "default",
+            width: "100%",
+            height: "75px",
+            padding: "10px",
+            marginTop: "5px",
+            marginBottom: "5px",
+            borderRadius: "10px",
+          },
+        },
+      ],
+    },
+  },
 });
 
 const darkTheme = createTheme({
