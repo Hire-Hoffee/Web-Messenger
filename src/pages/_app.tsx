@@ -23,10 +23,11 @@ export default function App(props: MyAppProps) {
         <link rel="icon" href="/favicon.ico" />
         <title>ChatScape</title>
       </Head>
-      <ThemeProvider theme={lightTheme}></ThemeProvider>
-      <CssBaseline />
-      <GlobalStyles styles={globalStyles.styles} />
-      <Component {...pageProps} />
+      <ThemeProvider theme={lightTheme}>
+        <CssBaseline />
+        <GlobalStyles styles={globalStyles.styles} />
+        <Component {...pageProps} />
+      </ThemeProvider>
     </CacheProvider>
   );
 }
