@@ -11,6 +11,7 @@ import createEmotionServer from "@emotion/server/create-instance";
 import { AppType } from "next/app";
 import createEmotionCache from "@/utils/createEmotionCache";
 import { MyAppProps } from "./_app";
+import { roboto } from "@/styles/themes";
 
 interface MyDocumentProps extends DocumentProps {
   emotionStyleTags: JSX.Element[];
@@ -18,7 +19,7 @@ interface MyDocumentProps extends DocumentProps {
 
 export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
   return (
-    <Html lang="en">
+    <Html lang="en" className={roboto.className}>
       <Head>
         <meta name="emotion-insertion-point" content="" />
         {emotionStyleTags}
