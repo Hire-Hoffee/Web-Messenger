@@ -14,5 +14,14 @@ export const globalStyles: GlobalStylesProps = {
       borderRadius: "10px",
       border: "3px solid #ffffff",
     },
+    a: {
+      color: "#28a8e9",
+      textDecoration: "none",
+      transition: "0.2s",
+    },
+    "a:hover": {
+      color: "#248abd",
+      transition: "0.2s",
+    },
   },
 };
