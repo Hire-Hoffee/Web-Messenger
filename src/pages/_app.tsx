@@ -2,8 +2,9 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import createEmotionCache from "@/utils/createEmotionCache";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, GlobalStyles } from "@mui/material";
 import { lightTheme, darkTheme } from "@/styles/themes";
+import { globalStyles } from "@/styles/globalStyles";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -24,6 +25,7 @@ export default function App(props: MyAppProps) {
       </Head>
       <ThemeProvider theme={lightTheme}></ThemeProvider>
       <CssBaseline />
+      <GlobalStyles styles={globalStyles.styles} />
       <Component {...pageProps} />
     </CacheProvider>
   );
