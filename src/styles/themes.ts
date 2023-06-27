@@ -18,12 +18,18 @@ const lightTheme = createTheme({
     },
     background: { default: "#fbfbfb" },
   },
+  typography: {
+    fontFamily: roboto.style.fontFamily,
+  },
 });
 
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
     background: { default: "#292f3f" },
+  },
+  typography: {
+    fontFamily: roboto.style.fontFamily,
   },
 });
 
