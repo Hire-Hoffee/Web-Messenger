@@ -43,6 +43,31 @@ const lightTheme = createTheme({
         },
       ],
     },
+    MuiPaper: {
+      defaultProps: {
+        elevation: 2,
+      },
+      variants: [
+        {
+          props: { variant: "elevation" },
+          style: {
+            backgroundColor: "#ffffff",
+            transition: "0.2s",
+            height: "75px",
+            width: "100%",
+            padding: "10px",
+            marginTop: "5px",
+            marginBottom: "5px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            "&:hover": {
+              background: "#f5f4ff",
+              transition: "0.2s",
+            },
+          },
+        },
+      ],
+    },
   },
 });
 

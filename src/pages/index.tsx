@@ -2,6 +2,7 @@ import { Grid, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ChatHeader from "@/components/chat/ChatHeader";
 import SearchChatBar from "@/components/menu/SearchChatBar";
+import ChatCard from "@/components/menu/ChatCard";
 
 const CustomBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -16,7 +17,11 @@ export default function Home() {
     <Grid container spacing={1} padding={0.5}>
       <Grid item md={3} sm={4}>
         <SearchChatBar />
-        <CustomBox>Lorem ipsum dolor sit amet consectetur adipisicing elit.</CustomBox>
+        <CustomBox>
+          <ChatCard />
+          <ChatCard />
+          <ChatCard />
+        </CustomBox>
       </Grid>
       <Grid item md={9} sm={8}>
         <ChatHeader />
