@@ -5,10 +5,11 @@ import SearchChatBar from "@/components/menu/SearchChatBar";
 import ChatCard from "@/components/menu/ChatCard";
 import SentMessage from "@/components/messages/SentMessage";
 import ReceivedMessage from "@/components/messages/ReceivedMessage";
+import MessageInput from "@/components/chat/MessageInput";
 
 const CustomBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
-  height: "99vh",
+  height: "calc(99vh - 85px)",
   borderRadius: "15px",
   overflowY: "scroll",
   padding: "5px",
@@ -25,12 +26,13 @@ export default function Home() {
           <ChatCard />
         </CustomBox>
       </Grid>
-      <Grid item md={9} sm={8}>
+      <Grid item md={9} sm={8} sx={{ position: "relative" }}>
         <ChatHeader />
-        <CustomBox>
+        <CustomBox sx={{ paddingBottom: "75px" }}>
           <SentMessage message="Lorem ipsum dolor sit amet consectetur adipisicing elit." />
           <ReceivedMessage message="Lorem ipsum dolor sit" />
         </CustomBox>
+        <MessageInput />
       </Grid>
     </Grid>
   );

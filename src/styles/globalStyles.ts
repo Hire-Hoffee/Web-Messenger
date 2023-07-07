@@ -5,6 +5,7 @@ export const globalStyles: GlobalStylesProps = {
     html: {
       height: "100%",
       overflow: "hidden",
+      userSelect: "none",
     },
     "*::-webkit-scrollbar": {
       width: "10px",
