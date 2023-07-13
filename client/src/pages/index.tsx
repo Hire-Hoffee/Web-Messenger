@@ -1,5 +1,8 @@
 import { Grid, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { io } from "socket.io-client";
+import { useEffect } from "react";
+
 import ChatHeader from "@/components/chat/ChatHeader";
 import SearchChatBar from "@/components/menu/SearchChatBar";
 import ChatCard from "@/components/menu/ChatCard";
@@ -16,6 +19,13 @@ const CustomBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function Home() {
+  useEffect(() => {
+    const socket = io("http://localhost:4000");
+    socket.on("connect", () => {
+      console.log("connected client ! " + socket.id);
+    });
+  }, []);
+
   return (
     <Grid container spacing={1} padding={0.5}>
       <Grid item md={3} sm={4}>
