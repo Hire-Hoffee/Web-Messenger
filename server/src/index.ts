@@ -2,6 +2,8 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 
+import graphqlInit from "./graphql";
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -11,9 +13,7 @@ const io = new Server(server, {
 });
 const port = process.env.PORT || 4000;
 
-app.get("/", (req, res) => {
-  res.json({ working: true });
-});
+app.use("/graphql", graphqlInit());
 
 io.on("connection", (socket) => {
   console.log("connected server ! " + socket.id);
