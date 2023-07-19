@@ -30,6 +30,17 @@ type Query {
   getChats(userId: Int!): [Chat!]!
   getChat(chatId: Int!): Chat!
 }
+
+input UserData {
+  email: String!
+  password: String!
+  username: String!
+  avatar: String
+}
+
+type Mutation {
+  createUser(data: UserData!): User!
+}
 `;
 
 export { gqlSchema };

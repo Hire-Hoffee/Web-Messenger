@@ -17,7 +17,7 @@ model User {
   sendedMessages   Message[] @relation("Sender")
   receivedMessages Message[] @relation("Receiver")
   chats            Chat[]    @relation("Participant")
-  isOnline         Boolean
+  isOnline         Boolean   @default(false)
   token            String?
 }
 
