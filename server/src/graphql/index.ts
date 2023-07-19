@@ -2,12 +2,14 @@ import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
 
 import { gqlSchema } from "./schema";
-import { hello } from "./resolvers/queries";
+import { getUser, getChats, getChat } from "./resolvers/queries";
 
 export default function () {
   const schema = buildSchema(gqlSchema);
   const rootResolvers = {
-    hello,
+    getUser,
+    getChats,
+    getChat,
   };
 
   return graphqlHTTP({
