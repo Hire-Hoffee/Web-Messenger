@@ -38,8 +38,23 @@ input UserData {
   avatar: String
 }
 
+input MessageData {
+  content: String!
+  senderId: Int!
+  receiverId: Int!
+  chatId: Int!
+}
+
+input ChatData {
+  senderId: Int!
+  receiverId: Int!
+  firstMessageContent: String!
+}
+
 type Mutation {
-  createUser(data: UserData!): User!
+  createUser(userData: UserData!): String!
+  createMessage(messageData: MessageData!): String!
+  createChat(chatData: ChatData! ): String!
 }
 `;
 
