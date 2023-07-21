@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import cors from "cors";
 
 import graphqlInit from "./graphql";
 import socketInit from "./socketio";
@@ -10,6 +11,8 @@ const server = http.createServer(app);
 const io = socketInit(server, "http://localhost:3000");
 
 const port = process.env.PORT || 4000;
+
+app.use(cors());
 
 app.use("/graphql", graphqlInit());
 io.on("connection", (socket) => socketHandler(socket));

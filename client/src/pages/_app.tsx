@@ -3,8 +3,11 @@ import Head from "next/head";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import createEmotionCache from "@/utils/createEmotionCache";
 import { CssBaseline, ThemeProvider, GlobalStyles } from "@mui/material";
+import { ApolloProvider } from "@apollo/client";
+
 import { lightTheme, darkTheme } from "@/styles/themes";
 import { globalStyles } from "@/styles/globalStyles";
+import client from "@/graphql/client";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -26,7 +29,9 @@ export default function App(props: MyAppProps) {
       <ThemeProvider theme={lightTheme}>
         <CssBaseline />
         <GlobalStyles styles={globalStyles.styles} />
-        <Component {...pageProps} />
+        <ApolloProvider client={client}>
+          <Component {...pageProps} />
+        </ApolloProvider>
       </ThemeProvider>
     </CacheProvider>
   );

@@ -1,9 +1,15 @@
-import React from "react";
-import { Box, Button, TextField, Typography, Paper } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, Typography, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { QuestionAnswer } from "@mui/icons-material";
+import { useMutation } from "@apollo/client";
+import { useRouter } from "next/router";
 
-const CustomBox = styled(Box)(({ theme }) => ({
+import { UserData } from "@/types/dbData";
+import { CREATE_USER } from "@/graphql/mutations";
+import CustomInput from "@/components/forms/CustomInput";
+
+const CustomBox = styled(Box)(() => ({
   height: "100vh",
   display: "flex",
   flexDirection: "column",
@@ -26,44 +32,43 @@ const CustomButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const CustomTextField = styled(TextField)(({ theme }) => ({
-  marginTop: "5px",
-  fontSize: "48px",
-  marginBottom: "5px",
-  "& label": {
-    color: "grey",
-  },
-  "& label.Mui-focused": {
-    color: theme.palette.primary.dark,
-  },
-  "& .MuiInput-underline:after": {
-    borderBottomColor: theme.palette.primary.dark,
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: theme.palette.primary.dark,
-      borderWidth: 2,
-    },
-    "&:hover fieldset": {
-      borderColor: theme.palette.primary.dark,
-      borderWidth: 3,
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: theme.palette.primary.dark,
-    },
-  },
-}));
-
 type Props = {};
 
 export default function Login({}: Props) {
+  const [userData, setUserData] = useState<UserData>({
+    email: "",
+    password: "",
+    username: "",
+    avatar: "",
+  });
+  const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
+  const router = useRouter();
+
+  function handleInput(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    key: keyof UserData
+  ) {
+    setUserData({ ...userData, [key]: event.target.value.trim() });
+  }
+
+  function createUserHandler(data: UserData) {
+    createUser({ variables: { ...data } });
+    setUserData({
+      email: "",
+      password: "",
+      username: "",
+      avatar: "",
+    });
+    router.push("/auth/login");
+  }
+
   return (
     <CustomBox>
       <Paper
         sx={{
           width: "700px",
           height: "initial",
-          "&:hover": { bgcolor: "primary.light" },
+          "&:hover": { bgcolor: "primary.light", cursor: "unset" },
           padding: "50px",
         }}
       >
@@ -83,15 +88,38 @@ export default function Login({}: Props) {
             Register new account
           </Typography>
         </Box>
+
         <Box sx={{ display: "flex", flexDirection: "column", marginBottom: "50px" }}>
-          <CustomTextField label="Email" variant="outlined" />
-          <CustomTextField label="Username" variant="outlined" />
-          <CustomTextField label="Password" variant="outlined" />
-          <CustomTextField label="Avatar URL" variant="outlined" />
+          <CustomInput
+            label="Email"
+            formData="email"
+            handler={handleInput}
+            value={userData.email}
+          />
+          <CustomInput
+            label="Username"
+            formData="username"
+            handler={handleInput}
+            value={userData.username}
+          />
+          <CustomInput
+            label="Password"
+            formData="password"
+            handler={handleInput}
+            value={userData.password}
+          />
+          <CustomInput
+            label="Avatar"
+            formData="avatar"
+            handler={handleInput}
+            value={userData.avatar}
+          />
         </Box>
+
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <CustomButton>Register</CustomButton>
+          <CustomButton onClick={() => createUserHandler(userData)}>Register</CustomButton>
           <CustomButton
+            onClick={() => router.push("/auth/login")}
             sx={{
               bgcolor: "primary.main",
               color: "primary.dark",
