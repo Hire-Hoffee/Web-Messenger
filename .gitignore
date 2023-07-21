@@ -37,4 +37,7 @@ next-env.d.ts
 # environment variables
 .env
 
+# database
 migrations
+dev.db
+dev.db-journal
