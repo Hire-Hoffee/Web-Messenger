@@ -1,36 +1,13 @@
-import React, { useState } from "react";
-import { Box, Button, Typography, Paper } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Button, Typography, Paper, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { QuestionAnswer } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
+import Joi from "joi";
 
 import { UserData } from "@/types/dbData";
-import { CREATE_USER } from "@/graphql/mutations";
-import CustomInput from "@/components/forms/CustomInput";
-
-const CustomBox = styled(Box)(() => ({
-  height: "100vh",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-}));
-
-const CustomButton = styled(Button)(({ theme }) => ({
-  height: "50px",
-  padding: "0px 30px 0px 30px",
-  backgroundColor: theme.palette.primary.dark,
-  borderRadius: "10px",
-  transition: "0.2s",
-  marginTop: "5px",
-  marginBottom: "5px",
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-    opacity: "0.8",
-    transition: "0.2s",
-  },
-}));
+import { REGISTER_USER } from "@/graphql/mutations";
 
 type Props = {};
 
@@ -41,18 +18,39 @@ export default function Login({}: Props) {
     username: "",
     avatar: "",
   });
-  const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
+  const [isBtnDisabled, setDisabled] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [registerUser] = useMutation(REGISTER_USER, { errorPolicy: "all" });
   const router = useRouter();
 
-  function handleInput(
+  const dataValidator = (data: UserData) => {
+    const validationSchema = Joi.object<UserData>({
+      email: Joi.string()
+        .email({ tlds: { allow: false } })
+        .required(),
+      username: Joi.string().required(),
+      password: Joi.string().min(8).max(32).required(),
+      avatar: Joi.string().uri(),
+    });
+
+    const { error } = validationSchema.validate(data);
+    return error ? setDisabled(true) : setDisabled(false);
+  };
+
+  const handleInput = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     key: keyof UserData
-  ) {
+  ) => {
     setUserData({ ...userData, [key]: event.target.value.trim() });
-  }
+  };
 
-  function createUserHandler(data: UserData) {
-    createUser({ variables: { ...data } });
+  const userRegistrationHandler = async (data: UserData) => {
+    try {
+      await registerUser({ variables: { ...data } });
+    } catch (error: any) {
+      setErrorMessage(error.networkError?.result.errors[0].message);
+      return;
+    }
     setUserData({
       email: "",
       password: "",
@@ -60,7 +58,11 @@ export default function Login({}: Props) {
       avatar: "",
     });
     router.push("/auth/login");
-  }
+  };
+
+  useEffect(() => {
+    dataValidator(userData);
+  }, [userData]);
 
   return (
     <CustomBox>
@@ -90,34 +92,51 @@ export default function Login({}: Props) {
         </Box>
 
         <Box sx={{ display: "flex", flexDirection: "column", marginBottom: "50px" }}>
-          <CustomInput
+          <CustomTextField
             label="Email"
-            formData="email"
-            handler={handleInput}
             value={userData.email}
+            onChange={(event) => handleInput(event, "email")}
+            type="email"
+            required
+            helperText="For example: example@someMail.com"
           />
-          <CustomInput
+          <CustomTextField
             label="Username"
-            formData="username"
-            handler={handleInput}
             value={userData.username}
+            onChange={(event) => handleInput(event, "username")}
+            required
+            helperText="For example: chatUser_4221"
           />
-          <CustomInput
+          <CustomTextField
             label="Password"
-            formData="password"
-            handler={handleInput}
             value={userData.password}
+            onChange={(event) => handleInput(event, "password")}
+            type="password"
+            required
+            helperText="Length from 8 to 32 characters"
           />
-          <CustomInput
-            label="Avatar"
-            formData="avatar"
-            handler={handleInput}
+          <CustomTextField
+            label="Avatar URL"
             value={userData.avatar}
+            onChange={(event) => handleInput(event, "avatar")}
+            type="url"
+            helperText="For example: 'https://coolPicture.com'"
           />
         </Box>
+        {errorMessage ? (
+          <Typography variant="h6" color="error" marginBottom="20px">
+            An error ocurred: "{errorMessage}"
+          </Typography>
+        ) : null}
 
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <CustomButton onClick={() => createUserHandler(userData)}>Register</CustomButton>
+          <CustomButton
+            sx={{ "&:disabled": { opacity: "0.7" } }}
+            disabled={isBtnDisabled}
+            onClick={() => userRegistrationHandler(userData)}
+          >
+            Register
+          </CustomButton>
           <CustomButton
             onClick={() => router.push("/auth/login")}
             sx={{
@@ -133,3 +152,54 @@ export default function Login({}: Props) {
     </CustomBox>
   );
 }
+
+const CustomBox = styled(Box)(() => ({
+  height: "100vh",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+}));
+
+const CustomButton = styled(Button)(({ theme }) => ({
+  height: "50px",
+  padding: "0px 30px 0px 30px",
+  backgroundColor: theme.palette.primary.dark,
+  borderRadius: "10px",
+  transition: "0.2s",
+  marginTop: "5px",
+  marginBottom: "5px",
+  "&:hover": {
+    backgroundColor: theme.palette.primary.dark,
+    opacity: "0.8",
+    transition: "0.2s",
+  },
+}));
+
+const CustomTextField = styled(TextField)(({ theme }) => ({
+  marginTop: "5px",
+  fontSize: "48px",
+  marginBottom: "5px",
+  "& label": {
+    color: "grey",
+  },
+  "& label.Mui-focused": {
+    color: theme.palette.primary.dark,
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: theme.palette.primary.dark,
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: theme.palette.primary.dark,
+      borderWidth: 2,
+    },
+    "&:hover fieldset": {
+      borderColor: theme.palette.primary.dark,
+      borderWidth: 3,
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: theme.palette.primary.dark,
+    },
+  },
+}));

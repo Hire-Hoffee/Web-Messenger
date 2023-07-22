@@ -26,7 +26,7 @@ type Chat {
 }
 
 type Query {
-  getUser(userId: Int!): User!
+  getUser(userName: String!): User
   getChats(userId: Int!): [Chat!]!
   getChat(chatId: Int!): Chat!
 }
@@ -52,7 +52,7 @@ input ChatData {
 }
 
 type Mutation {
-  createUser(userData: UserData!): String!
+  userRegistration(userCredentials: UserData!): String!
   createMessage(messageData: MessageData!): String!
   createChat(chatData: ChatData! ): String!
 }
