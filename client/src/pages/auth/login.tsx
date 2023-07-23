@@ -124,6 +124,7 @@ export default function Login({}: Props) {
             Login
           </CustomButton>
           <CustomButton
+            onClick={() => router.push("/auth/register")}
             sx={{
               bgcolor: "primary.main",
               color: "primary.dark",
