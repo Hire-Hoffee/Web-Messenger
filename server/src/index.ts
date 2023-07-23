@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 import cors from "cors";
+import "dotenv/config";
 
 import graphqlInit from "./graphql";
 import socketInit from "./socketio";

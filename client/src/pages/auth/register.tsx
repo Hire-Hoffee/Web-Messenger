@@ -6,7 +6,7 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import Joi from "joi";
 
-import { UserData } from "@/types/dbData";
+import { UserData } from "@/types/databaseData";
 import { REGISTER_USER } from "@/graphql/mutations";
 
 type Props = {};
@@ -20,7 +20,7 @@ export default function Login({}: Props) {
   });
   const [isBtnDisabled, setDisabled] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
-  const [registerUser] = useMutation(REGISTER_USER, { errorPolicy: "all" });
+  const [registerUser] = useMutation(REGISTER_USER);
   const router = useRouter();
 
   const dataValidator = (data: UserData) => {
@@ -51,12 +51,14 @@ export default function Login({}: Props) {
       setErrorMessage(error.networkError?.result.errors[0].message);
       return;
     }
+
     setUserData({
       email: "",
       password: "",
       username: "",
       avatar: "",
     });
+
     router.push("/auth/login");
   };
 
@@ -123,6 +125,7 @@ export default function Login({}: Props) {
             helperText="For example: 'https://coolPicture.com'"
           />
         </Box>
+
         {errorMessage ? (
           <Typography variant="h6" color="error" marginBottom="20px">
             An error ocurred: "{errorMessage}"

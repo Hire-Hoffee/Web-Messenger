@@ -3,7 +3,7 @@ import { buildSchema } from "graphql";
 
 import { gqlSchema } from "./schema";
 import { getUser, getChats, getChat } from "./resolvers/queries";
-import { createMessage, createChat, userRegistration } from "./resolvers/mutations";
+import { createMessage, createChat, userRegistration, userLogin } from "./resolvers/mutations";
 
 export default function () {
   const schema = buildSchema(gqlSchema);
@@ -15,6 +15,7 @@ export default function () {
     createChat,
 
     userRegistration,
+    userLogin,
   };
 
   return graphqlHTTP({

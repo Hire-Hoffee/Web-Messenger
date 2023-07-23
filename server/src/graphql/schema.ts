@@ -31,11 +31,16 @@ type Query {
   getChat(chatId: Int!): Chat!
 }
 
-input UserData {
+input UserDataRegistration {
   email: String!
   password: String!
   username: String!
   avatar: String
+}
+
+input UserDataLogin {
+  username: String!
+  password: String!
 }
 
 input MessageData {
@@ -52,7 +57,8 @@ input ChatData {
 }
 
 type Mutation {
-  userRegistration(userCredentials: UserData!): String!
+  userRegistration(userCredentials: UserDataRegistration!): String!
+  userLogin(userCredentials: UserDataLogin!): String!
   createMessage(messageData: MessageData!): String!
   createChat(chatData: ChatData! ): String!
 }

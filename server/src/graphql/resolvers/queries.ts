@@ -1,7 +1,7 @@
 import { prisma } from "../../database/db";
 
-const getUser = async (args: { userId: number }) => {
-  return await prisma.user.findUnique({ where: { id: args.userId } });
+const getUser = async (args: { userName: string }) => {
+  return await prisma.user.findUnique({ where: { username: args.userName } });
 };
 
 const getChats = async (args: { userId: number }) => {

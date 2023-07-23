@@ -2,8 +2,9 @@ import { GraphQLError } from "graphql";
 import Joi from "joi";
 import bcrypt from "bcrypt";
 
-import { prisma } from "../../database/db";
-import { UserData, MessageData, ChatData } from "../../types/db";
+import { prisma } from "@/database/db";
+import { UserData, MessageData, ChatData } from "@/types/db";
+import { genAccessToken, genRefreshToken } from "@/utils/jwtGeneration";
 
 const userRegistration = async (data: { userCredentials: UserData }) => {
   const userData = data.userCredentials;
@@ -35,6 +36,37 @@ const userRegistration = async (data: { userCredentials: UserData }) => {
   return "User created";
 };
 
+const userLogin = async (data: { userCredentials: { username: string; password: string } }) => {
+  const userData = data.userCredentials;
+
+  const validationSchema = Joi.object<{ username: string; password: string }>({
+    username: Joi.string().required(),
+    password: Joi.string().min(8).max(32).required(),
+  });
+
+  const { error } = validationSchema.validate(userData);
+  if (error) {
+    throw new GraphQLError(String(error), { extensions: { code: "DATA_VALIDATION_ERROR" } });
+  }
+
+  const existingUser = await prisma.user.findUnique({ where: { username: userData.username } });
+  if (!existingUser) {
+    throw new GraphQLError("User not found, register a new account");
+  }
+
+  const passwordCheck = await bcrypt.compare(userData.password, existingUser.password);
+  if (!passwordCheck) {
+    throw new GraphQLError("Invalid password");
+  }
+
+  const accessToken = genAccessToken({ id: existingUser.id, username: existingUser.username });
+  const refreshToken = genRefreshToken({ id: existingUser.id, email: existingUser.email });
+
+  await prisma.user.update({ where: { email: existingUser.email }, data: { token: refreshToken } });
+
+  return accessToken;
+};
+
 const createMessage = async ({ messageData }: any) => {
   await prisma.message.create({ data: messageData });
   return "Message created";
@@ -57,4 +89,4 @@ const createChat = async ({ chatData }: any) => {
   return "Chat created";
 };
 
-export { createMessage, createChat, userRegistration };
+export { createMessage, createChat, userRegistration, userLogin };
