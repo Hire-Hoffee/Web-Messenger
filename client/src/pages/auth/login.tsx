@@ -3,10 +3,10 @@ import { Box, Button, Typography, Paper, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { QuestionAnswer } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
+import { useRouter } from "next/router";
 import Joi from "joi";
 
 import { LOGIN_USER } from "@/graphql/mutations";
-import { useRouter } from "next/router";
 
 type Props = {};
 

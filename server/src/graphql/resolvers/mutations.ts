@@ -62,7 +62,10 @@ const userLogin = async (data: { userCredentials: { username: string; password: 
   const accessToken = genAccessToken({ id: existingUser.id, username: existingUser.username });
   const refreshToken = genRefreshToken({ id: existingUser.id, email: existingUser.email });
 
-  await prisma.user.update({ where: { email: existingUser.email }, data: { token: refreshToken } });
+  await prisma.user.update({
+    where: { email: existingUser.email },
+    data: { token: refreshToken, isOnline: true },
+  });
 
   return accessToken;
 };

@@ -6,7 +6,7 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import Joi from "joi";
 
-import { UserData } from "@/types/databaseData";
+import { UserData } from "@/types";
 import { REGISTER_USER } from "@/graphql/mutations";
 
 type Props = {};
@@ -16,7 +16,7 @@ export default function Login({}: Props) {
     email: "",
     password: "",
     username: "",
-    avatar: "",
+    avatar: "https://shorturl.at/gwDEY",
   });
   const [isBtnDisabled, setDisabled] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -122,7 +122,7 @@ export default function Login({}: Props) {
             value={userData.avatar}
             onChange={(event) => handleInput(event, "avatar")}
             type="url"
-            helperText="For example: 'https://coolPicture.com'"
+            helperText="For example: 'https://coolPicture.com' or leave this field as default"
           />
         </Box>
 
