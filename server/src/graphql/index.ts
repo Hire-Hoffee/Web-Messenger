@@ -2,7 +2,7 @@ import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
 
 import { gqlSchema } from "./schema";
-import { getUserInfo, getUserChats, getChat } from "./resolvers/queries";
+import { getUserInfo, getUserChats, getChatData } from "./resolvers/queries";
 import { createMessage, createChat, userRegistration, userLogin } from "./resolvers/mutations";
 
 export default function () {
@@ -10,7 +10,7 @@ export default function () {
   const rootResolvers = {
     getUserInfo,
     getUserChats,
-    getChat,
+    getChatData,
     createMessage,
     createChat,
 

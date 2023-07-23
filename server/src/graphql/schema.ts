@@ -28,7 +28,7 @@ type Chat {
 type Query {
   getUserInfo(userName: String!): User
   getUserChats(userName: String!): [Chat!]
-  getChat(chatId: Int!): Chat!
+  getChatData(chatId: Int!): Chat!
 }
 
 input UserDataRegistration {

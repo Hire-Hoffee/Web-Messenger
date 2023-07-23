@@ -15,6 +15,7 @@ const GET_USER_INFO = gql`
 const GET_USER_CHATS = gql`
   query GetUserChats($username: String!) {
     getUserChats(userName: $username) {
+      id
       participants {
         username
         avatar
@@ -30,4 +31,26 @@ const GET_USER_CHATS = gql`
   }
 `;
 
-export { GET_USER_INFO, GET_USER_CHATS };
+const GET_CHAT_DATA = gql`
+  query GetChatData($chatId: Int!) {
+    getChatData(chatId: $chatId) {
+      id
+      createdAt
+      participants {
+        username
+        avatar
+        isOnline
+      }
+      messages {
+        id
+        content
+        createdAt
+        sender {
+          username
+        }
+      }
+    }
+  }
+`;
+
+export { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA };

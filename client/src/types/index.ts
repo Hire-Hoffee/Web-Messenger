@@ -27,8 +27,16 @@ type UserLoggedData = {
 };
 
 type UserChatsData = {
+  id?: number;
   participants: { username: string; avatar: string; isOnline: boolean }[];
-  messages: { content: string; sender: { username: string } }[];
+  messages: { content: string; createdAt: string; sender: { username: string } }[];
 };
 
-export type { UserData, MessageData, ChatData, UserLoggedData, UserChatsData };
+type UserChatData = {
+  id?: number;
+  createdAt: string;
+  participants: { username: string; avatar: string; isOnline: boolean }[];
+  messages: { id: number; content: string; createdAt: string; sender: { username: string } }[];
+};
+
+export type { UserData, MessageData, ChatData, UserLoggedData, UserChatsData, UserChatData };

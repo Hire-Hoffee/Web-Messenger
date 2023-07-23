@@ -10,9 +10,9 @@ const getUserInfo = async (data: { userName: string }) => {
   return user;
 };
 
-const getUserChats = async (args: { userId: number }) => {
+const getUserChats = async (data: { userId: number }) => {
   const chats = await prisma.chat.findMany({
-    where: { participants: { some: { id: args.userId } } },
+    where: { participants: { some: { id: data.userId } } },
     include: {
       messages: {
         include: {
@@ -33,9 +33,9 @@ const getUserChats = async (args: { userId: number }) => {
   return chats;
 };
 
-const getChat = async (args: { chatId: number }) => {
-  return await prisma.chat.findUnique({
-    where: { id: args.chatId },
+const getChatData = async (data: { chatId: number }) => {
+  const chatData = await prisma.chat.findUnique({
+    where: { id: data.chatId },
     include: {
       messages: {
         include: {
@@ -47,6 +47,11 @@ const getChat = async (args: { chatId: number }) => {
       participants: true,
     },
   });
+  if (!chatData) {
+    throw new GraphQLError("User not found", { extensions: { code: "ERROR_404" } });
+  }
+
+  return chatData;
 };
 
-export { getUserInfo, getUserChats, getChat };
+export { getUserInfo, getUserChats, getChatData };
