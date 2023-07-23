@@ -1,11 +1,17 @@
-import { prisma } from "../../database/db";
+import { prisma } from "@/database/db";
+import { GraphQLError } from "graphql";
 
-const getUser = async (args: { userName: string }) => {
-  return await prisma.user.findUnique({ where: { username: args.userName } });
+const getUserInfo = async (data: { userName: string }) => {
+  const user = await prisma.user.findUnique({ where: { username: data.userName } });
+  if (!user) {
+    throw new GraphQLError("User not found", { extensions: { code: "ERROR_404" } });
+  }
+
+  return user;
 };
 
-const getChats = async (args: { userId: number }) => {
-  return await prisma.chat.findMany({
+const getUserChats = async (args: { userId: number }) => {
+  const chats = await prisma.chat.findMany({
     where: { participants: { some: { id: args.userId } } },
     include: {
       messages: {
@@ -19,6 +25,12 @@ const getChats = async (args: { userId: number }) => {
       participants: true,
     },
   });
+
+  if (chats.length === 0) {
+    throw new GraphQLError("Chats not found", { extensions: { code: "ERROR_404" } });
+  }
+
+  return chats;
 };
 
 const getChat = async (args: { chatId: number }) => {
@@ -37,4 +49,4 @@ const getChat = async (args: { chatId: number }) => {
   });
 };
 
-export { getUser, getChats, getChat };
+export { getUserInfo, getUserChats, getChat };
