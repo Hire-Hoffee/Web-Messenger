@@ -10,6 +10,7 @@ type MessageData = {
   senderId: number;
   receiverId: number;
   chatId: number;
+  createdAt: string;
 };
 
 type ChatData = {
@@ -33,9 +34,9 @@ type UserChatsData = {
 };
 
 type UserChatData = {
-  id?: number;
+  id: number;
   createdAt: string;
-  participants: { username: string; avatar: string; isOnline: boolean }[];
+  participants: { id: number; username: string; avatar: string; isOnline: boolean }[];
   messages: { id: number; content: string; createdAt: string; sender: { username: string } }[];
 };
 

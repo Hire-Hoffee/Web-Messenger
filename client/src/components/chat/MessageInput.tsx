@@ -3,7 +3,33 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { Send } from "@mui/icons-material";
 
-type Props = {};
+type Props = {
+  message: string;
+  handlerBtn: Function;
+  handlerInput: Function;
+};
+
+export default function MessageInput({ message, handlerBtn, handlerInput }: Props) {
+  return (
+    <CustomPaper>
+      <CustomInput
+        onChange={(e) => {
+          handlerInput(e);
+        }}
+        fullWidth
+        placeholder="Type here..."
+        value={message}
+      />
+      <CustomButton
+        onClick={() => {
+          handlerBtn(message);
+        }}
+      >
+        <Send />
+      </CustomButton>
+    </CustomPaper>
+  );
+}
 
 const CustomPaper = styled(Paper)(({ theme }) => ({
   display: "flex",
@@ -41,14 +67,3 @@ const CustomButton = styled(Button)(({ theme }) => ({
     transition: "0.2s",
   },
 }));
-
-export default function MessageInput({}: Props) {
-  return (
-    <CustomPaper>
-      <CustomInput fullWidth placeholder="Type here..." />
-      <CustomButton>
-        <Send />
-      </CustomButton>
-    </CustomPaper>
-  );
-}

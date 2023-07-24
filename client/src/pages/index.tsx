@@ -1,6 +1,5 @@
 import { Grid, Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import type { QueryResult, OperationVariables } from "@apollo/client";
@@ -11,9 +10,10 @@ import ChatCard from "@/components/menu/ChatCard";
 import SentMessage from "@/components/messages/SentMessage";
 import ReceivedMessage from "@/components/messages/ReceivedMessage";
 import MessageInput from "@/components/chat/MessageInput";
-import { UserLoggedData, UserChatsData, UserChatData } from "@/types";
+import { UserLoggedData, UserChatsData, UserChatData, MessageData } from "@/types";
 import { useLazyQuery } from "@apollo/client";
 import { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA } from "@/graphql/queries";
+import { socket } from "@/socketio";
 
 export default function Home() {
   const router = useRouter();
@@ -21,6 +21,7 @@ export default function Home() {
   const [userChats, setUserChats] = useState<UserChatsData[]>();
   const [userChatData, setUserChatData] = useState<UserChatData>();
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [message, setMessage] = useState<string>("");
   const [getUserInfo] = useLazyQuery(GET_USER_INFO);
   const [getUserChats] = useLazyQuery(GET_USER_CHATS);
   const [getChatData] = useLazyQuery(GET_CHAT_DATA);
@@ -32,6 +33,40 @@ export default function Home() {
     setUserChatData(chatData.data?.getChatData);
   };
 
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setMessage(event.target.value);
+  };
+
+  const sendMessage = (msg: string) => {
+    if (userChatData) {
+      const chatRoom = [
+        userChatData?.participants[0].username,
+        userChatData?.participants[1].username,
+      ];
+
+      const senderId =
+        userChatData.participants[0].username === localStorage.getItem("username")
+          ? userChatData.participants[0].id
+          : userChatData.participants[1].id;
+      const receiverId =
+        userChatData.participants[0].username === localStorage.getItem("username")
+          ? userChatData.participants[1].id
+          : userChatData.participants[0].id;
+
+      const message: MessageData = {
+        content: msg,
+        chatId: userChatData.id,
+        senderId,
+        receiverId,
+        createdAt: Date.now().toString(),
+      };
+
+      const data = { data: message, room: chatRoom.sort().join("_") };
+      socket.emit("message", data);
+      setMessage("");
+    }
+  };
+
   useEffect(() => {
     if (!localStorage.getItem("username")) {
       router.push("/auth/login");
@@ -40,6 +75,7 @@ export default function Home() {
     (async () => {
       try {
         const variables = { username: localStorage.getItem("username") };
+        const chatRooms: string[] = [];
 
         const [userInfo, userChats]: [
           QueryResult<{ getUserInfo: UserLoggedData }, OperationVariables>,
@@ -48,15 +84,21 @@ export default function Home() {
 
         setUserInfo(userInfo.data?.getUserInfo);
         setUserChats(userChats.data?.getUserChats);
+
+        userChats.data?.getUserChats.forEach((chat) => {
+          const chatRoom = [chat.participants[0].username, chat.participants[1].username];
+          chatRooms.push(chatRoom.sort().join("_"));
+        });
+
+        socket.emit("join_rooms", chatRooms);
       } catch (error: any) {
         setErrorMessage(error.networkError?.result.errors[0].message);
         return;
       }
     })();
 
-    const socket = io("http://localhost:4000");
-    socket.on("connect", () => {
-      console.log("connected client ! " + socket.id);
+    socket.on("message", (data: MessageData) => {
+      console.log(data);
     });
   }, []);
 
@@ -104,7 +146,7 @@ export default function Home() {
             </Typography>
           )}
         </CustomBox>
-        <MessageInput />
+        <MessageInput message={message} handlerInput={handleInput} handlerBtn={sendMessage} />
       </Grid>
     </Grid>
   );

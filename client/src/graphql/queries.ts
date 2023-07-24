@@ -37,6 +37,7 @@ const GET_CHAT_DATA = gql`
       id
       createdAt
       participants {
+        id
         username
         avatar
         isOnline
