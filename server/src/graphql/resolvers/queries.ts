@@ -10,9 +10,9 @@ const getUserInfo = async (data: { userName: string }) => {
   return user;
 };
 
-const getUserChats = async (data: { userId: number }) => {
+const getUserChats = async (data: { userName: string }) => {
   const chats = await prisma.chat.findMany({
-    where: { participants: { some: { id: data.userId } } },
+    where: { participants: { some: { username: data.userName } } },
     include: {
       messages: {
         include: {
