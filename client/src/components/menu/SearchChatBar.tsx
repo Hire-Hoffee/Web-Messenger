@@ -2,6 +2,29 @@ import { AppBar, Box, Toolbar, InputBase, styled } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import MenuSlideBar from "./MenuSlideBar";
 
+type Props = {
+  username: string | undefined;
+  userAvatar: string | undefined;
+};
+
+export default function SearchChatBar({ userAvatar, username }: Props) {
+  return (
+    <Box>
+      <AppBar position="static" variant="elevation">
+        <Toolbar>
+          <MenuSlideBar userAvatar={userAvatar} username={username} />
+          <SearchBar>
+            <SearchIconWrapper>
+              <Search sx={{ color: "primary.dark" }} />
+            </SearchIconWrapper>
+            <StyledInputBase placeholder="Search…" inputProps={{ "aria-label": "search" }} />
+          </SearchBar>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}
+
 const SearchBar = styled("div")(({ theme }) => ({
   position: "relative",
   width: "100%",
@@ -25,27 +48,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
   },
 }));
-
-export default function SearchChatBar() {
-  return (
-    <Box>
-      <AppBar position="static" variant="elevation">
-        <Toolbar>
-          <MenuSlideBar />
-          <SearchBar>
-            <SearchIconWrapper>
-              <Search sx={{ color: "primary.dark" }} />
-            </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ "aria-label": "search" }} />
-          </SearchBar>
-        </Toolbar>
-      </AppBar>
-    </Box>
-  );
-}

@@ -23,6 +23,7 @@ const GET_USER_CHATS = gql`
       }
       messages {
         content
+        createdAt
         sender {
           username
         }

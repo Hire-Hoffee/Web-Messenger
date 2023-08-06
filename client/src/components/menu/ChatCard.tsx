@@ -30,7 +30,11 @@ export default function ChatCard({ messages, participants }: UserChatsData) {
             </Typography>
           </CustomBox>
           <CustomBox sx={{ alignItems: "center" }}>
-            <Typography sx={{ fontSize: "12px" }}>{messages[0]?.createdAt || ""}</Typography>
+            <Typography sx={{ fontSize: "12px" }}>
+              {new Date(Number(messages[0]?.createdAt))
+                .toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })
+                .toString() || ""}
+            </Typography>
             <Circle sx={{ fontSize: "18px", color: "primary.dark" }} />
           </CustomBox>
         </FlexBox>

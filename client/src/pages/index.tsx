@@ -126,7 +126,12 @@ export default function Home() {
   return (
     <Grid container spacing={1} padding={0.5}>
       <Grid item md={3} sm={4}>
-        <SearchChatBar />
+        {userInfo ? (
+          <SearchChatBar username={userInfo.username} userAvatar={userInfo.avatar} />
+        ) : (
+          ""
+        )}
+
         <CustomBox>
           {userChats ? (
             userChats.map((chat) => {
@@ -147,7 +152,18 @@ export default function Home() {
         </CustomBox>
       </Grid>
       <Grid item md={9} sm={8} sx={{ position: "relative" }}>
-        <ChatHeader />
+        {userChatData ? (
+          <ChatHeader
+            username={
+              userChatData.participants[0].username === localStorage.getItem("username")
+                ? userChatData.participants[1].username
+                : userChatData.participants[0].username
+            }
+          />
+        ) : (
+          ""
+        )}
+
         <CustomBox sx={{ paddingBottom: "75px" }}>
           {userChatData ? (
             userChatData.messages.map((msg) => {
@@ -167,6 +183,7 @@ export default function Home() {
             </Typography>
           )}
         </CustomBox>
+
         <MessageInput message={message} handlerInput={handleInput} handlerBtn={sendMessage} />
       </Grid>
     </Grid>

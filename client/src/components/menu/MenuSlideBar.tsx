@@ -3,20 +3,12 @@ import { Menu, DarkMode, LightMode } from "@mui/icons-material";
 import { useState } from "react";
 
 type Anchor = "left";
+type Props = {
+  username: string | undefined;
+  userAvatar: string | undefined;
+};
 
-const CustomSwitch = styled(Switch)(({ theme }) => ({
-  "& .MuiSwitch-switchBase": {
-    color: theme.palette.primary.dark,
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.primary.dark, theme.palette.action.hoverOpacity),
-    },
-  },
-  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-    backgroundColor: theme.palette.primary.dark,
-  },
-}));
-
-export default function MenuSlideBar() {
+export default function MenuSlideBar({ userAvatar, username }: Props) {
   const [state, setState] = useState({ left: false });
 
   const toggleDrawer =
@@ -39,16 +31,23 @@ export default function MenuSlideBar() {
       />
 
       <Drawer
-        PaperProps={{ sx: { width: "inherit", marginLeft: "10px", height: "99vh" } }}
+        PaperProps={{
+          sx: {
+            width: "inherit",
+            marginLeft: "10px",
+            height: "99vh",
+            "&:hover": { bgcolor: "primary.light" },
+          },
+        }}
         anchor="left"
         open={state["left"]}
         onClose={toggleDrawer("left", false)}
       >
         <Box sx={{ width: "300px", padding: "10px" }}>
           <Box>
-            <Avatar alt="avatar" src="https://i.pravatar.cc/100" sx={{ width: 100, height: 100 }} />
+            <Avatar alt="avatar" src={userAvatar} sx={{ width: 100, height: 100 }} />
             <Typography variant="h2" sx={{ fontSize: "26px", marginTop: "15px" }}>
-              Victor
+              {username}
             </Typography>
           </Box>
           <Box display="flex" justifyContent={"space-between"} alignItems="center" marginY="20px">
@@ -66,3 +65,15 @@ export default function MenuSlideBar() {
     </Box>
   );
 }
+
+const CustomSwitch = styled(Switch)(({ theme }) => ({
+  "& .MuiSwitch-switchBase": {
+    color: theme.palette.primary.dark,
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.primary.dark, theme.palette.action.hoverOpacity),
+    },
+  },
+  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+    backgroundColor: theme.palette.primary.dark,
+  },
+}));
