@@ -26,11 +26,11 @@ export default function ChatCard({ messages, participants }: UserChatsData) {
               {username}
             </Typography>
             <Typography sx={{ fontSize: "14px" }}>
-              {username}: {messages[0].content}
+              {messages[0]?.content || "No messages"}
             </Typography>
           </CustomBox>
           <CustomBox sx={{ alignItems: "center" }}>
-            <Typography sx={{ fontSize: "12px" }}>{messages[0].createdAt}</Typography>
+            <Typography sx={{ fontSize: "12px" }}>{messages[0]?.createdAt || ""}</Typography>
             <Circle sx={{ fontSize: "18px", color: "primary.dark" }} />
           </CustomBox>
         </FlexBox>
