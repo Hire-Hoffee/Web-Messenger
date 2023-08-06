@@ -6,11 +6,12 @@ type UserData = {
 };
 
 type MessageData = {
+  id?: number;
   content: string;
   senderId: number;
   receiverId: number;
   chatId: number;
-  createdAt: string;
+  createdAt?: string;
 };
 
 type ChatData = {

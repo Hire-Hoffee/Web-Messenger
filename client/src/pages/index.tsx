@@ -10,7 +10,7 @@ import ChatCard from "@/components/menu/ChatCard";
 import SentMessage from "@/components/messages/SentMessage";
 import ReceivedMessage from "@/components/messages/ReceivedMessage";
 import MessageInput from "@/components/chat/MessageInput";
-import { UserLoggedData, UserChatsData, UserChatData, MessageData } from "@/types";
+import type { UserLoggedData, UserChatsData, UserChatData, MessageData, UserData } from "@/types";
 import { useLazyQuery } from "@apollo/client";
 import { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA } from "@/graphql/queries";
 import { socket } from "@/socketio";
@@ -37,39 +37,42 @@ export default function Home() {
     setMessage(event.target.value);
   };
 
-  const sendMessage = (msg: string) => {
-    if (userChatData) {
-      const chatRoom = [
-        userChatData?.participants[0].username,
-        userChatData?.participants[1].username,
-      ];
-
-      const senderId =
-        userChatData.participants[0].username === localStorage.getItem("username")
-          ? userChatData.participants[0].id
-          : userChatData.participants[1].id;
-      const receiverId =
-        userChatData.participants[0].username === localStorage.getItem("username")
-          ? userChatData.participants[1].id
-          : userChatData.participants[0].id;
-
-      const message: MessageData = {
-        content: msg,
-        chatId: userChatData.id,
-        senderId,
-        receiverId,
-        createdAt: Date.now().toString(),
-      };
-
-      const data = { data: message, room: chatRoom.sort().join("_") };
-      socket.emit("message", data);
-      setMessage("");
+  const sendMessage = (msgContent: string) => {
+    if (!msgContent) {
+      return;
     }
+    if (!userChatData) {
+      setMessage("");
+      return;
+    }
+
+    const participants = userChatData.participants;
+    const chatRoom = [participants[0].username, participants[1].username];
+
+    const senderId =
+      participants[0].username === localStorage.getItem("username")
+        ? participants[0].id
+        : participants[1].id;
+    const receiverId =
+      participants[0].username === localStorage.getItem("username")
+        ? participants[1].id
+        : participants[0].id;
+
+    const message: MessageData = {
+      content: msgContent,
+      chatId: userChatData.id,
+      senderId,
+      receiverId,
+    };
+
+    socket.emit("message", { msg: message, room: chatRoom.sort().join("_") });
+    setMessage("");
   };
 
   useEffect(() => {
     if (!localStorage.getItem("username")) {
       router.push("/auth/login");
+      return;
     }
 
     (async () => {
@@ -77,10 +80,15 @@ export default function Home() {
         const variables = { username: localStorage.getItem("username") };
         const chatRooms: string[] = [];
 
-        const [userInfo, userChats]: [
+        type FetchingData = [
           QueryResult<{ getUserInfo: UserLoggedData }, OperationVariables>,
           QueryResult<{ getUserChats: UserChatsData[] }, OperationVariables>
-        ] = await Promise.all([getUserInfo({ variables }), getUserChats({ variables })]);
+        ];
+
+        const [userInfo, userChats]: FetchingData = await Promise.all([
+          getUserInfo({ variables }),
+          getUserChats({ variables }),
+        ]);
 
         setUserInfo(userInfo.data?.getUserInfo);
         setUserChats(userChats.data?.getUserChats);
@@ -96,11 +104,24 @@ export default function Home() {
         return;
       }
     })();
-
-    socket.on("message", (data: MessageData) => {
-      console.log(data);
-    });
   }, []);
+
+  useEffect(() => {
+    socket.on("message", (data: MessageData & { sender: UserData }) => {
+      const message = {
+        id: data.id!,
+        content: data.content,
+        createdAt: String(Date.now()),
+        sender: {
+          username: data.sender.username,
+        },
+      };
+
+      if (userChatData) {
+        setUserChatData({ ...userChatData, messages: [...userChatData.messages, message] });
+      }
+    });
+  }, [userChatData]);
 
   return (
     <Grid container spacing={1} padding={0.5}>
