@@ -1,16 +1,13 @@
-import { Grid, Box, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useLazyQuery } from "@apollo/client";
 import type { QueryResult, OperationVariables } from "@apollo/client";
 
-import ChatHeader from "@/components/chat/ChatHeader";
 import SearchChatBar from "@/components/menu/SearchChatBar";
-import ChatCard from "@/components/menu/ChatCard";
-import SentMessage from "@/components/messages/SentMessage";
-import ReceivedMessage from "@/components/messages/ReceivedMessage";
 import MessageInput from "@/components/chat/MessageInput";
+import ListOfChats from "@/components/menu/ListOfChats";
+import ChatScreen from "@/components/chat/ChatScreen";
 
 import type { UserLoggedData, UserChatData, SendedMessageData, ReceivedMessageData } from "@/types";
 import { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA } from "@/graphql/queries";
@@ -119,79 +116,13 @@ export default function Home() {
   return (
     <Grid container spacing={1} padding={0.5}>
       <Grid item md={3} sm={4}>
-        {userInfo ? (
-          <SearchChatBar username={userInfo.username} userAvatar={userInfo.avatar} />
-        ) : (
-          ""
-        )}
-
-        <CustomBox>
-          {userChats ? (
-            userChats.map((chat) => {
-              return (
-                <Box key={chat.id} onClick={() => getChatDataHandler(chat.id)}>
-                  <ChatCard
-                    participants={chat.participants}
-                    messages={chat.messages}
-                    id={chat.id}
-                    createdAt={chat.createdAt}
-                  />
-                </Box>
-              );
-            })
-          ) : (
-            <Typography
-              sx={{ textAlign: "center", marginTop: "50px", color: "primary.dark" }}
-              variant="h5"
-            >
-              No chats
-            </Typography>
-          )}
-        </CustomBox>
+        <SearchChatBar userInfo={userInfo} />
+        <ListOfChats userChats={userChats} getChatDataHandler={getChatDataHandler} />
       </Grid>
       <Grid item md={9} sm={8} sx={{ position: "relative" }}>
-        {userChatData ? (
-          <ChatHeader
-            username={
-              userChatData.participants[0].username === localStorage.getItem("username")
-                ? userChatData.participants[1].username
-                : userChatData.participants[0].username
-            }
-          />
-        ) : (
-          ""
-        )}
-
-        <CustomBox sx={{ paddingBottom: "75px" }}>
-          {userChatData ? (
-            userChatData.messages.map((msg) => {
-              if (localStorage.getItem("username") === msg.sender.username) {
-                return <SentMessage message={msg.content} createdAt={msg.createdAt} key={msg.id} />;
-              }
-              return (
-                <ReceivedMessage message={msg.content} createdAt={msg.createdAt} key={msg.id} />
-              );
-            })
-          ) : (
-            <Typography
-              sx={{ textAlign: "center", marginTop: "150px", color: "primary.dark" }}
-              variant="h4"
-            >
-              No messages
-            </Typography>
-          )}
-        </CustomBox>
-
+        <ChatScreen userChatData={userChatData} />
         <MessageInput message={message} handlerInput={handleInput} handlerBtn={sendMessage} />
       </Grid>
     </Grid>
   );
 }
-
-const CustomBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-  height: "calc(99vh - 85px)",
-  borderRadius: "15px",
-  overflowY: "scroll",
-  padding: "5px",
-}));
