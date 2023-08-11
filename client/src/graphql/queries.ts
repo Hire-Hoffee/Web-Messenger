@@ -16,12 +16,15 @@ const GET_USER_CHATS = gql`
   query GetUserChats($username: String!) {
     getUserChats(userName: $username) {
       id
+      createdAt
       participants {
+        id
         username
         avatar
         isOnline
       }
       messages {
+        id
         content
         createdAt
         sender {

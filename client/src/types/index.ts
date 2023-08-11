@@ -1,25 +1,3 @@
-type UserData = {
-  email: string;
-  password: string;
-  username: string;
-  avatar?: string;
-};
-
-type MessageData = {
-  id?: number;
-  content: string;
-  senderId: number;
-  receiverId: number;
-  chatId: number;
-  createdAt?: string;
-};
-
-type ChatData = {
-  senderId: number;
-  receiverId: number;
-  firstMessageContent: string;
-};
-
 type UserLoggedData = {
   email: string;
   username: string;
@@ -28,10 +6,21 @@ type UserLoggedData = {
   isOnline: boolean;
 };
 
-type UserChatsData = {
-  id?: number;
-  participants: { username: string; avatar: string; isOnline: boolean }[];
-  messages: { content: string; createdAt: string; sender: { username: string } }[];
+type SendedMessageData = {
+  content: string;
+  senderId: number;
+  receiverId: number;
+  chatId: number;
+};
+
+type ReceivedMessageData = {
+  id: number;
+  content: string;
+  createdAt: string;
+  senderId: number;
+  receiverId: number;
+  chatId: number;
+  sender: UserLoggedData;
 };
 
 type UserChatData = {
@@ -41,4 +30,4 @@ type UserChatData = {
   messages: { id: number; content: string; createdAt: string; sender: { username: string } }[];
 };
 
-export type { UserData, MessageData, ChatData, UserLoggedData, UserChatsData, UserChatData };
+export type { UserLoggedData, UserChatData, SendedMessageData, ReceivedMessageData };

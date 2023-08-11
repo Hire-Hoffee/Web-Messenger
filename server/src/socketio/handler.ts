@@ -14,7 +14,6 @@ export default function (socket: Socket) {
       data: data.msg,
       include: { sender: {} },
     });
-
     socket.nsp.to(data.room).emit("message", message);
   });
 }

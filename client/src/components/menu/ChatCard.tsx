@@ -1,10 +1,10 @@
 import { Paper, Typography, Avatar, Box } from "@mui/material";
 import { Circle } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { UserChatsData } from "@/types";
+import { UserChatData } from "@/types";
 import { useState } from "react";
 
-export default function ChatCard({ messages, participants }: UserChatsData) {
+export default function ChatCard({ messages, participants }: UserChatData) {
   const [username, setUsername] = useState(
     localStorage.getItem("username") === participants[0].username
       ? participants[1].username

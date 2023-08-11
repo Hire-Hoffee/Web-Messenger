@@ -2,6 +2,7 @@ import { Grid, Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useLazyQuery } from "@apollo/client";
 import type { QueryResult, OperationVariables } from "@apollo/client";
 
 import ChatHeader from "@/components/chat/ChatHeader";
@@ -10,18 +11,20 @@ import ChatCard from "@/components/menu/ChatCard";
 import SentMessage from "@/components/messages/SentMessage";
 import ReceivedMessage from "@/components/messages/ReceivedMessage";
 import MessageInput from "@/components/chat/MessageInput";
-import type { UserLoggedData, UserChatsData, UserChatData, MessageData, UserData } from "@/types";
-import { useLazyQuery } from "@apollo/client";
+
+import type { UserLoggedData, UserChatData, SendedMessageData, ReceivedMessageData } from "@/types";
 import { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA } from "@/graphql/queries";
 import { socket } from "@/socketio";
 
 export default function Home() {
   const router = useRouter();
+
   const [userInfo, setUserInfo] = useState<UserLoggedData>();
-  const [userChats, setUserChats] = useState<UserChatsData[]>();
+  const [userChats, setUserChats] = useState<UserChatData[]>();
   const [userChatData, setUserChatData] = useState<UserChatData>();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [message, setMessage] = useState<string>("");
+
   const [getUserInfo] = useLazyQuery(GET_USER_INFO);
   const [getUserChats] = useLazyQuery(GET_USER_CHATS);
   const [getChatData] = useLazyQuery(GET_CHAT_DATA);
@@ -29,7 +32,6 @@ export default function Home() {
   const getChatDataHandler = async (chatId: number | undefined) => {
     const chatData: QueryResult<{ getChatData: UserChatData }, OperationVariables> =
       await getChatData({ variables: { chatId } });
-
     setUserChatData(chatData.data?.getChatData);
   };
 
@@ -58,7 +60,7 @@ export default function Home() {
         ? participants[1].id
         : participants[0].id;
 
-    const message: MessageData = {
+    const message: SendedMessageData = {
       content: msgContent,
       chatId: userChatData.id,
       senderId,
@@ -79,10 +81,9 @@ export default function Home() {
       try {
         const variables = { username: localStorage.getItem("username") };
         const chatRooms: string[] = [];
-
         type FetchingData = [
           QueryResult<{ getUserInfo: UserLoggedData }, OperationVariables>,
-          QueryResult<{ getUserChats: UserChatsData[] }, OperationVariables>
+          QueryResult<{ getUserChats: UserChatData[] }, OperationVariables>
         ];
 
         const [userInfo, userChats]: FetchingData = await Promise.all([
@@ -107,18 +108,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    socket.on("message", (data: MessageData & { sender: UserData }) => {
-      const message = {
-        id: data.id!,
-        content: data.content,
-        createdAt: String(Date.now()),
-        sender: {
-          username: data.sender.username,
-        },
-      };
-
+    socket.on("message", (data: ReceivedMessageData) => {
       if (userChatData) {
-        setUserChatData({ ...userChatData, messages: [...userChatData.messages, message] });
+        data.createdAt = String(Date.now());
+        setUserChatData({ ...userChatData, messages: [...userChatData.messages, data] });
       }
     });
   }, [userChatData]);
@@ -137,7 +130,12 @@ export default function Home() {
             userChats.map((chat) => {
               return (
                 <Box key={chat.id} onClick={() => getChatDataHandler(chat.id)}>
-                  <ChatCard participants={chat.participants} messages={chat.messages} />
+                  <ChatCard
+                    participants={chat.participants}
+                    messages={chat.messages}
+                    id={chat.id}
+                    createdAt={chat.createdAt}
+                  />
                 </Box>
               );
             })

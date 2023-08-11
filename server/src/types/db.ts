@@ -10,7 +10,6 @@ type MessageData = {
   senderId: number;
   receiverId: number;
   chatId: number;
-  createdAt?: string;
 };
 
 type ChatData = {
