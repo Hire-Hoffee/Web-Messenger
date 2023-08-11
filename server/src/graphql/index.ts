@@ -1,26 +1,34 @@
-import { graphqlHTTP } from "express-graphql";
-import { buildSchema } from "graphql";
+import http from "http";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { Application } from "express";
 
-import { gqlSchema } from "./schema";
+import { gqlSchema as typeDefs } from "./schema";
 import { getUserInfo, getUserChats, getChatData } from "./resolvers/queries";
 import { createMessage, createChat, userRegistration, userLogin } from "./resolvers/mutations";
 
-export default function () {
-  const schema = buildSchema(gqlSchema);
-  const rootResolvers = {
+const resolvers = {
+  Query: {
     getUserInfo,
     getUserChats,
     getChatData,
+  },
+  Mutation: {
     createMessage,
     createChat,
-
     userRegistration,
     userLogin,
-  };
+  },
+};
 
-  return graphqlHTTP({
-    schema: schema,
-    rootValue: rootResolvers,
-    graphiql: true,
+export default async function (httpServer: http.Server, app: Application, route: string) {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
+
+  await server.start();
+  app.use(route, expressMiddleware(server));
 }

@@ -1,8 +1,8 @@
 import { prisma } from "@/database/db";
 import { GraphQLError } from "graphql";
 
-const getUserInfo = async (data: { userName: string }) => {
-  const user = await prisma.user.findUnique({ where: { username: data.userName } });
+const getUserInfo = async (parent: any, args: { userName: string }) => {
+  const user = await prisma.user.findUnique({ where: { username: args.userName } });
   if (!user) {
     throw new GraphQLError("User not found", { extensions: { code: "ERROR_404" } });
   }
@@ -10,9 +10,9 @@ const getUserInfo = async (data: { userName: string }) => {
   return user;
 };
 
-const getUserChats = async (data: { userName: string }) => {
+const getUserChats = async (parent: any, args: { userName: string }) => {
   const chats = await prisma.chat.findMany({
-    where: { participants: { some: { username: data.userName } } },
+    where: { participants: { some: { username: args.userName } } },
     include: {
       messages: {
         include: {
@@ -33,9 +33,9 @@ const getUserChats = async (data: { userName: string }) => {
   return chats;
 };
 
-const getChatData = async (data: { chatId: number }) => {
+const getChatData = async (parent: any, args: { chatId: number }) => {
   const chatData = await prisma.chat.findUnique({
-    where: { id: data.chatId },
+    where: { id: args.chatId },
     include: {
       messages: {
         include: {

@@ -6,8 +6,8 @@ import { prisma } from "@/database/db";
 import { UserData, MessageData, ChatData } from "@/types/db";
 import { genAccessToken, genRefreshToken } from "@/utils/jwtGeneration";
 
-const userRegistration = async (data: { userCredentials: UserData }) => {
-  const userData = data.userCredentials;
+const userRegistration = async (parent: any, args: { userCredentials: UserData }) => {
+  const userData = args.userCredentials;
 
   const validationSchema = Joi.object<UserData>({
     email: Joi.string().email().required(),
@@ -36,8 +36,11 @@ const userRegistration = async (data: { userCredentials: UserData }) => {
   return "User created";
 };
 
-const userLogin = async (data: { userCredentials: { username: string; password: string } }) => {
-  const userData = data.userCredentials;
+const userLogin = async (
+  parent: any,
+  args: { userCredentials: { username: string; password: string } }
+) => {
+  const userData = args.userCredentials;
 
   const validationSchema = Joi.object<{ username: string; password: string }>({
     username: Joi.string().required(),
