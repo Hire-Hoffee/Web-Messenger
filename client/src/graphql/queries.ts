@@ -58,4 +58,14 @@ const GET_CHAT_DATA = gql`
   }
 `;
 
-export { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA };
+const SEARCH_USERS = gql`
+  query SearchUsers($userName: String!) {
+    searchUsers(userName: $userName) {
+      id
+      avatar
+      username
+    }
+  }
+`;
+
+export { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA, SEARCH_USERS };

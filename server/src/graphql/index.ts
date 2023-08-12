@@ -5,7 +5,7 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import { Application } from "express";
 
 import { gqlSchema as typeDefs } from "./schema";
-import { getUserInfo, getUserChats, getChatData } from "./resolvers/queries";
+import { getUserInfo, getUserChats, getChatData, searchUsers } from "./resolvers/queries";
 import { createMessage, createChat, userRegistration, userLogin } from "./resolvers/mutations";
 
 const resolvers = {
@@ -13,6 +13,7 @@ const resolvers = {
     getUserInfo,
     getUserChats,
     getChatData,
+    searchUsers,
   },
   Mutation: {
     createMessage,

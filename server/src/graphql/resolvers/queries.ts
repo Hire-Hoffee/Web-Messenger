@@ -10,6 +10,14 @@ const getUserInfo = async (parent: any, args: { userName: string }) => {
   return user;
 };
 
+const searchUsers = async (parent: any, args: { userName: string }) => {
+  if (!args.userName) {
+    return [];
+  }
+  const users = await prisma.user.findMany({ where: { username: { startsWith: args.userName } } });
+  return users;
+};
+
 const getUserChats = async (parent: any, args: { userName: string }) => {
   const chats = await prisma.chat.findMany({
     where: { participants: { some: { username: args.userName } } },
@@ -54,4 +62,4 @@ const getChatData = async (parent: any, args: { chatId: number }) => {
   return chatData;
 };
 
-export { getUserInfo, getUserChats, getChatData };
+export { getUserInfo, getUserChats, getChatData, searchUsers };

@@ -30,4 +30,16 @@ type UserChatData = {
   messages: { id: number; content: string; createdAt: string; sender: { username: string } }[];
 };
 
-export type { UserLoggedData, UserChatData, SendedMessageData, ReceivedMessageData };
+type foundUsersData = {
+  id: number;
+  avatar: string;
+  username: string;
+};
+
+export type {
+  UserLoggedData,
+  UserChatData,
+  SendedMessageData,
+  ReceivedMessageData,
+  foundUsersData,
+};
