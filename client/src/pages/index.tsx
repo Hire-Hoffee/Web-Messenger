@@ -87,8 +87,14 @@ export default function Home() {
           getUserChats({ variables }),
         ]);
 
+        if (userChats.data?.getUserChats) {
+          setUserChats(
+            [...userChats.data?.getUserChats].sort((a, b) => {
+              return Number(b.messages[0].createdAt) - Number(a.messages[0].createdAt);
+            })
+          );
+        }
         setUserInfo(userInfo.data?.getUserInfo);
-        setUserChats(userChats.data?.getUserChats);
 
         socket.emit("join_own_room", localStorage.getItem("username"));
       } catch (error: any) {
@@ -104,6 +110,20 @@ export default function Home() {
         data.createdAt = String(Date.now());
         setUserChatData({ ...userChatData, messages: [...userChatData.messages, data] });
       }
+
+      setUserChats((prev) => {
+        const chats = prev?.map((chat) => {
+          if (chat.id === data.chatId) {
+            chat = { ...chat, messages: [data] };
+          }
+          return chat;
+        });
+
+        chats?.sort((a, b) => {
+          return Number(b.messages[0].createdAt) - Number(a.messages[0].createdAt);
+        });
+        return chats;
+      });
     });
 
     socket.on("created_chat", (data: UserChatData) => {
@@ -115,7 +135,7 @@ export default function Home() {
     <Grid container spacing={1} padding={0.5}>
       <Grid item md={3} sm={4}>
         <SearchChatBar userInfo={userInfo} />
-        <ListOfChats userChats={userChats} getChatDataHandler={getChatDataHandler} />
+        <ListOfChats userChats={userChats} handler={getChatDataHandler} />
       </Grid>
       <Grid item md={9} sm={8} sx={{ position: "relative" }}>
         <ChatScreen userChatData={userChatData} />

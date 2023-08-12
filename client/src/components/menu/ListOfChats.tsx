@@ -7,16 +7,16 @@ import type { UserChatData } from "@/types";
 
 type Props = {
   userChats: UserChatData[] | undefined;
-  getChatDataHandler: Function;
+  handler: Function;
 };
 
-export default function ListOfChats({ userChats, getChatDataHandler }: Props) {
+export default function ListOfChats({ userChats, handler }: Props) {
   return (
     <CustomBox>
       {userChats ? (
         userChats.map((chat) => {
           return (
-            <Box key={chat.id} onClick={() => getChatDataHandler(chat.id)}>
+            <Box key={chat.id} onClick={() => handler(chat.id)}>
               <ChatCard
                 participants={chat.participants}
                 messages={chat.messages}
