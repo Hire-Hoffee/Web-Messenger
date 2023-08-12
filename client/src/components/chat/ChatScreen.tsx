@@ -27,18 +27,29 @@ export default function ChatScreen({ userChatData }: Props) {
 
       <CustomBox sx={{ paddingBottom: "75px" }}>
         {userChatData ? (
-          userChatData.messages.map((msg) => {
-            if (localStorage.getItem("username") === msg.sender.username) {
-              return <SentMessage message={msg.content} createdAt={msg.createdAt} key={msg.id} />;
-            }
-            return <ReceivedMessage message={msg.content} createdAt={msg.createdAt} key={msg.id} />;
-          })
+          userChatData.messages.length === 0 ? (
+            <Typography
+              sx={{ textAlign: "center", marginTop: "150px", color: "primary.dark" }}
+              variant="h4"
+            >
+              No messages
+            </Typography>
+          ) : (
+            userChatData.messages.map((msg) => {
+              if (localStorage.getItem("username") === msg.sender.username) {
+                return <SentMessage message={msg.content} createdAt={msg.createdAt} key={msg.id} />;
+              }
+              return (
+                <ReceivedMessage message={msg.content} createdAt={msg.createdAt} key={msg.id} />
+              );
+            })
+          )
         ) : (
           <Typography
             sx={{ textAlign: "center", marginTop: "150px", color: "primary.dark" }}
             variant="h4"
           >
-            No messages
+            Select who you want to write to...
           </Typography>
         )}
       </CustomBox>
