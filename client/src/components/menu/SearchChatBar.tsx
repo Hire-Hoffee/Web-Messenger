@@ -2,6 +2,7 @@ import { AppBar, Box, Toolbar, InputBase, styled } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { useState } from "react";
 import { OperationVariables, QueryResult, useLazyQuery } from "@apollo/client";
+import socket from "@/socketio";
 
 import MenuSlideBar from "./MenuSlideBar";
 import { UserLoggedData, foundUsersData } from "@/types";
@@ -27,6 +28,16 @@ export default function SearchChatBar({ userInfo }: Props) {
     setFoundUsers(foundUsers.data?.searchUsers);
   };
 
+  const createChatHandler = (user: foundUsersData) => {
+    const data = {
+      firstUsername: localStorage.getItem("username"),
+      secondUsername: user.username,
+    };
+    socket.emit("create_chat", data);
+    setSearchText("");
+    setFoundUsers([]);
+  };
+
   return (
     <>
       {userInfo ? (
@@ -49,7 +60,11 @@ export default function SearchChatBar({ userInfo }: Props) {
               </SearchBar>
             </Toolbar>
           </AppBar>
-          {foundUsers && foundUsers?.length !== 0 ? <FoundUsersList users={foundUsers} /> : ""}
+          {foundUsers && foundUsers?.length !== 0 ? (
+            <FoundUsersList handler={createChatHandler} users={foundUsers} />
+          ) : (
+            ""
+          )}
         </Box>
       ) : (
         ""

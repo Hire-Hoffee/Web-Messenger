@@ -5,14 +5,15 @@ import type { foundUsersData } from "@/types";
 
 type Props = {
   users: foundUsersData[];
+  handler: Function;
 };
 
-export default function FoundUsersList({ users }: Props) {
+export default function FoundUsersList({ users, handler }: Props) {
   return (
     <StyledList>
       {users.map((user) => {
         return (
-          <StyledListItem key={user.id}>
+          <StyledListItem key={user.id} onClick={() => handler(user)}>
             <ListItemAvatar>
               <Avatar src={user.avatar} />
             </ListItemAvatar>

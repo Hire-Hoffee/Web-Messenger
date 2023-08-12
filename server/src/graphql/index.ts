@@ -6,7 +6,7 @@ import { Application } from "express";
 
 import { gqlSchema as typeDefs } from "./schema";
 import { getUserInfo, getUserChats, getChatData, searchUsers } from "./resolvers/queries";
-import { createMessage, createChat, userRegistration, userLogin } from "./resolvers/mutations";
+import { userRegistration, userLogin } from "./resolvers/mutations";
 
 const resolvers = {
   Query: {
@@ -16,8 +16,6 @@ const resolvers = {
     searchUsers,
   },
   Mutation: {
-    createMessage,
-    createChat,
     userRegistration,
     userLogin,
   },

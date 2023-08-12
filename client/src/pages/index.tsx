@@ -11,7 +11,7 @@ import ChatScreen from "@/components/chat/ChatScreen";
 
 import type { UserLoggedData, UserChatData, SendedMessageData, ReceivedMessageData } from "@/types";
 import { GET_USER_INFO, GET_USER_CHATS, GET_CHAT_DATA } from "@/graphql/queries";
-import { socket } from "@/socketio";
+import socket from "@/socketio";
 
 export default function Home() {
   const router = useRouter();
@@ -64,7 +64,7 @@ export default function Home() {
       receiverId,
     };
 
-    socket.emit("message", { msg: message, room: chatRoom.sort().join("_") });
+    socket.emit("message", { msg: message, room: chatRoom });
     setMessage("");
   };
 
@@ -77,7 +77,6 @@ export default function Home() {
     (async () => {
       try {
         const variables = { username: localStorage.getItem("username") };
-        const chatRooms: string[] = [];
         type FetchingData = [
           QueryResult<{ getUserInfo: UserLoggedData }, OperationVariables>,
           QueryResult<{ getUserChats: UserChatData[] }, OperationVariables>
@@ -91,12 +90,7 @@ export default function Home() {
         setUserInfo(userInfo.data?.getUserInfo);
         setUserChats(userChats.data?.getUserChats);
 
-        userChats.data?.getUserChats.forEach((chat) => {
-          const chatRoom = [chat.participants[0].username, chat.participants[1].username];
-          chatRooms.push(chatRoom.sort().join("_"));
-        });
-
-        socket.emit("join_rooms", chatRooms);
+        socket.emit("join_own_room", localStorage.getItem("username"));
       } catch (error: any) {
         setErrorMessage(error.networkError?.result.errors[0].message);
         return;
@@ -111,7 +105,11 @@ export default function Home() {
         setUserChatData({ ...userChatData, messages: [...userChatData.messages, data] });
       }
     });
-  }, [userChatData]);
+
+    socket.on("created_chat", (data: UserChatData) => {
+      userChats ? setUserChats([data, ...userChats]) : setUserChats([data]);
+    });
+  }, [userChatData, userChats]);
 
   return (
     <Grid container spacing={1} padding={0.5}>

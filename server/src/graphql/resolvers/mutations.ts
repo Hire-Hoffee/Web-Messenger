@@ -73,26 +73,4 @@ const userLogin = async (
   return accessToken;
 };
 
-const createMessage = async ({ messageData }: any) => {
-  await prisma.message.create({ data: messageData });
-  return "Message created";
-};
-
-const createChat = async ({ chatData }: any) => {
-  await prisma.chat.create({
-    data: {
-      participants: { connect: [{ id: chatData.senderId }, { id: chatData.receiverId }] },
-      messages: {
-        create: {
-          content: chatData.firstMessageContent,
-          senderId: chatData.senderId,
-          receiverId: chatData.receiverId,
-        },
-      },
-    },
-  });
-
-  return "Chat created";
-};
-
-export { createMessage, createChat, userRegistration, userLogin };
+export { userRegistration, userLogin };
