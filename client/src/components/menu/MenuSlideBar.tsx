@@ -126,10 +126,10 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-switchBase": {
     color: theme.palette.primary.dark,
   },
-  "& .Mui-checked + .MuiSwitch-track": {
+  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
     backgroundColor: theme.palette.primary.dark,
   },
-  "& .Mui-checked": {
+  "& .MuiSwitch-switchBase.Mui-checked": {
     color: theme.palette.primary.dark,
   },
   "& .MuiSwitch-track": {

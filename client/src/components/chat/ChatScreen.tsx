@@ -49,7 +49,7 @@ export default function ChatScreen({ userChatData }: Props) {
         ) : (
           <Typography
             sx={{ textAlign: "center", marginTop: "150px", color: "primary.dark" }}
-            variant="h4"
+            variant="h5"
           >
             Select who you want to write to...
           </Typography>
