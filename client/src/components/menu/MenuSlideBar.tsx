@@ -1,8 +1,21 @@
-import { Box, Drawer, Button, Switch, Typography, Avatar, styled, alpha } from "@mui/material";
-import { Menu, DarkMode, LightMode } from "@mui/icons-material";
+import {
+  Box,
+  Drawer,
+  Switch,
+  Avatar,
+  styled,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  ListItemIcon,
+} from "@mui/material";
+import { Menu, DarkMode, LightMode, Logout } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 
 import socket from "@/socketio";
+import { useRouter } from "next/router";
 
 type Anchor = "left";
 type Props = {
@@ -13,6 +26,7 @@ type Props = {
 export default function MenuSlideBar({ userAvatar, username }: Props) {
   const [state, setState] = useState({ left: false });
   const [checked, setChecked] = useState(false);
+  const router = useRouter();
 
   const changeThemeHandler = () => {
     const user = localStorage.getItem("username");
@@ -29,6 +43,11 @@ export default function MenuSlideBar({ userAvatar, username }: Props) {
       setChecked(true);
       return;
     }
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem("username");
+    router.push("/auth/login");
   };
 
   const toggleDrawer =
@@ -65,36 +84,37 @@ export default function MenuSlideBar({ userAvatar, username }: Props) {
             width: "inherit",
             marginLeft: "10px",
             height: "99vh",
-            "&:hover": { bgcolor: "primary.light" },
+            cursor: "unset",
           },
         }}
         anchor="left"
         open={state["left"]}
         onClose={toggleDrawer("left", false)}
       >
-        <Box sx={{ width: "300px", padding: "10px" }}>
-          <Box>
-            <Avatar alt="avatar" src={userAvatar} sx={{ width: 100, height: 100 }} />
-            <Typography variant="h2" sx={{ fontSize: "26px", marginTop: "15px" }}>
-              {username}
-            </Typography>
-          </Box>
-          <Box display="flex" justifyContent={"space-between"} alignItems="center" marginY="20px">
-            <Typography variant="h3" fontSize="18px">
-              Change theme
-            </Typography>
-            <Box display="flex" alignItems="center">
-              <CustomSwitch
-                checked={checked}
-                onChange={() => {
-                  changeThemeHandler();
-                }}
-                aria-label="lol"
-              />
-              {checked ? <DarkMode /> : <LightMode />}
-            </Box>
-          </Box>
-          <Button variant="contained">Log out</Button>
+        <Box sx={{ width: "250px" }}>
+          <List>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar src={userAvatar} />
+              </ListItemAvatar>
+              <ListItemText primary={username} />
+            </ListItem>
+
+            <Divider sx={{ marginY: "20px" }} />
+
+            <CustomListItem onClick={changeThemeHandler}>
+              <ListItemText primary="Theme" />
+              <CustomSwitch checked={checked} />
+              <ListItemIcon>{checked ? <DarkMode /> : <LightMode />}</ListItemIcon>
+            </CustomListItem>
+
+            <CustomListItem onClick={logoutHandler}>
+              <ListItemText primary="Logout" />
+              <ListItemIcon>
+                <Logout />
+              </ListItemIcon>
+            </CustomListItem>
+          </List>
         </Box>
       </Drawer>
     </Box>
@@ -104,11 +124,21 @@ export default function MenuSlideBar({ userAvatar, username }: Props) {
 const CustomSwitch = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-switchBase": {
     color: theme.palette.primary.dark,
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.primary.dark, theme.palette.action.hoverOpacity),
-    },
   },
   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
     backgroundColor: theme.palette.primary.dark,
+  },
+  "& .MuiSwitch-track": {
+    backgroundColor: theme.palette.primary.dark,
+  },
+}));
+
+const CustomListItem = styled(ListItem)(({ theme }) => ({
+  transition: "0.2s",
+  "&:hover": {
+    backgroundColor: theme.palette.primary.main,
+    borderRadius: "10px",
+    transition: "0.2s",
+    cursor: "pointer",
   },
 }));
