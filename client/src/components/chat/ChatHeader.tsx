@@ -3,9 +3,10 @@ import OptionsMenu from "./OptionsMenu";
 
 type Props = {
   username: string | undefined;
+  chatId: number;
 };
 
-export default function ChatHeader({ username }: Props) {
+export default function ChatHeader({ username, chatId }: Props) {
   return (
     <Box>
       <AppBar variant="elevation" position="static">
@@ -14,7 +15,7 @@ export default function ChatHeader({ username }: Props) {
             <Typography variant="h6">{username}</Typography>
             <Typography sx={{ fontSize: "14px" }}>Was online 3 hours ago</Typography>
           </Box>
-          <OptionsMenu />
+          <OptionsMenu chatId={chatId} />
         </Toolbar>
       </AppBar>
     </Box>

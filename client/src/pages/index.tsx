@@ -112,13 +112,9 @@ export default function Home() {
       }
 
       setUserChats((prev) => {
-        const chats = prev?.map((chat) => {
-          if (chat.id === data.chatId) {
-            chat = { ...chat, messages: [data] };
-          }
-          return chat;
-        });
-
+        const chats = prev?.map((chat) =>
+          chat.id === data.chatId ? { ...chat, messages: [data] } : chat
+        );
         chats?.sort((a, b) => {
           return Number(b.messages[0].createdAt) - Number(a.messages[0].createdAt);
         });
@@ -128,6 +124,17 @@ export default function Home() {
 
     socket.on("created_chat", (data: UserChatData) => {
       userChats ? setUserChats([data, ...userChats]) : setUserChats([data]);
+    });
+
+    socket.on("chat_deleted", (data: { id: number; createdAt: Date }) => {
+      setUserChats((prev) => prev?.filter((chat) => chat.id !== data.id));
+    });
+
+    socket.on("messages_deleted", (data: number) => {
+      setUserChatData((prev) => (prev ? { ...prev, messages: [] } : prev));
+      setUserChats((prev) =>
+        prev?.map((chat) => (chat.id === data ? { ...chat, messages: [] } : chat))
+      );
     });
   }, [userChatData, userChats]);
 

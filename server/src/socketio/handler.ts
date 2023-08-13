@@ -44,4 +44,26 @@ export default function (socket: Socket) {
     socket.nsp.to(data.firstUsername).emit("created_chat", chat);
     socket.nsp.to(data.secondUsername).emit("created_chat", chat);
   });
+
+  socket.on("delete_chat", async (data: number) => {
+    const findChat = await prisma.chat.findUnique({ where: { id: data } });
+
+    if (!findChat) {
+      return;
+    }
+
+    const deletedChat = await prisma.chat.delete({ where: { id: data } });
+    socket.emit("chat_deleted", deletedChat);
+  });
+
+  socket.on("delete_messages", async (data: number) => {
+    const findMessages = await prisma.message.findMany({ where: { chatId: data } });
+
+    if (!findMessages || findMessages.length === 0) {
+      return;
+    }
+
+    await prisma.message.deleteMany({ where: { chatId: data } });
+    socket.emit("messages_deleted", data);
+  });
 }

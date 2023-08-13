@@ -13,7 +13,7 @@ type Props = {
 export default function ListOfChats({ userChats, handler }: Props) {
   return (
     <CustomBox>
-      {userChats ? (
+      {userChats && userChats.length !== 0 ? (
         userChats.map((chat) => {
           return (
             <Box key={chat.id} onClick={() => handler(chat.id)}>
