@@ -17,7 +17,7 @@ export default function ChatCard({ messages, participants }: UserChatData) {
   );
 
   return (
-    <Paper>
+    <Paper sx={{ "&:hover": { opacity: "0.8" } }}>
       <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
         <Avatar alt="avatar" src={userAvatar} sx={{ width: 65, height: 65 }} />
         <FlexBox>

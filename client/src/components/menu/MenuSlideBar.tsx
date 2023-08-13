@@ -1,6 +1,8 @@
 import { Box, Drawer, Button, Switch, Typography, Avatar, styled, alpha } from "@mui/material";
 import { Menu, DarkMode, LightMode } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import socket from "@/socketio";
 
 type Anchor = "left";
 type Props = {
@@ -10,6 +12,24 @@ type Props = {
 
 export default function MenuSlideBar({ userAvatar, username }: Props) {
   const [state, setState] = useState({ left: false });
+  const [checked, setChecked] = useState(false);
+
+  const changeThemeHandler = () => {
+    const user = localStorage.getItem("username");
+
+    if (localStorage.getItem("theme") === "dark") {
+      localStorage.setItem("theme", "light");
+      socket.emit("change_theme", { theme: "light", user });
+      setChecked(false);
+      return;
+    }
+    if (localStorage.getItem("theme") === "light") {
+      localStorage.setItem("theme", "dark");
+      socket.emit("change_theme", { theme: "dark", user });
+      setChecked(true);
+      return;
+    }
+  };
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -22,6 +42,15 @@ export default function MenuSlideBar({ userAvatar, username }: Props) {
       }
       setState({ ...state, [anchor]: open });
     };
+
+  useEffect(() => {
+    if (!localStorage.getItem("theme")) {
+      localStorage.setItem("theme", "light");
+      setChecked(false);
+      return;
+    }
+    localStorage.getItem("theme") === "dark" ? setChecked(true) : setChecked(false);
+  }, []);
 
   return (
     <Box>
@@ -55,8 +84,14 @@ export default function MenuSlideBar({ userAvatar, username }: Props) {
               Change theme
             </Typography>
             <Box display="flex" alignItems="center">
-              <CustomSwitch />
-              <LightMode />
+              <CustomSwitch
+                checked={checked}
+                onChange={() => {
+                  changeThemeHandler();
+                }}
+                aria-label="lol"
+              />
+              {checked ? <DarkMode /> : <LightMode />}
             </Box>
           </Box>
           <Button variant="contained">Log out</Button>

@@ -66,4 +66,8 @@ export default function (socket: Socket) {
     await prisma.message.deleteMany({ where: { chatId: data } });
     socket.emit("messages_deleted", data);
   });
+
+  socket.on("change_theme", async (data: { theme: string; user: string }) => {
+    socket.nsp.to(data.user).emit("changed_theme", data.theme);
+  });
 }

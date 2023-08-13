@@ -9,6 +9,9 @@ import { lightTheme, darkTheme } from "@/styles/themes";
 import { globalStyles } from "@/styles/globalStyles";
 import client from "@/graphql/client";
 
+import socket from "@/socketio";
+import { useEffect, useState } from "react";
+
 const clientSideEmotionCache = createEmotionCache();
 
 export interface MyAppProps extends AppProps {
@@ -17,6 +20,15 @@ export interface MyAppProps extends AppProps {
 
 export default function App(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    setTheme(localStorage.getItem("theme") || "light");
+
+    socket.on("changed_theme", (data: string) => {
+      setTheme(data);
+    });
+  }, []);
 
   return (
     <CacheProvider value={emotionCache}>
@@ -26,7 +38,7 @@ export default function App(props: MyAppProps) {
         <link rel="icon" href="/favicon.ico" />
         <title>ChatScape</title>
       </Head>
-      <ThemeProvider theme={lightTheme}>
+      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
         <CssBaseline />
         <GlobalStyles styles={globalStyles.styles} />
         <ApolloProvider client={client}>
