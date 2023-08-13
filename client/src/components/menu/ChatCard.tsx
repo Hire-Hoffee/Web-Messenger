@@ -5,16 +5,22 @@ import { UserChatData } from "@/types";
 import { useState } from "react";
 
 export default function ChatCard({ messages, participants }: UserChatData) {
-  const [username, setUsername] = useState(
-    localStorage.getItem("username") === participants[0].username
-      ? participants[1].username
-      : participants[0].username
-  );
-  const [userAvatar, setUserAvatar] = useState(
-    localStorage.getItem("username") === participants[0].username
-      ? participants[1].avatar
-      : participants[0].avatar
-  );
+  const [username, setUsername] = useState(() => {
+    if (participants.length === 2) {
+      return localStorage.getItem("username") === participants[0].username
+        ? participants[1].username
+        : participants[0].username;
+    }
+    return participants[0].username;
+  });
+  const [userAvatar, setUserAvatar] = useState(() => {
+    if (participants.length === 2) {
+      return localStorage.getItem("username") === participants[0].username
+        ? participants[1].avatar
+        : participants[0].avatar;
+    }
+    return participants[0].avatar;
+  });
 
   return (
     <Paper sx={{ "&:hover": { opacity: "0.8" } }}>

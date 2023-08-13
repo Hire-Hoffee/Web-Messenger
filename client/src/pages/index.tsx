@@ -29,7 +29,14 @@ export default function Home() {
   const getChatDataHandler = async (chatId: number | undefined) => {
     const chatData: QueryResult<{ getChatData: UserChatData }, OperationVariables> =
       await getChatData({ variables: { chatId } });
-    setUserChatData(chatData.data?.getChatData);
+
+    let data = chatData.data?.getChatData;
+
+    if (data && data?.participants.length !== 2) {
+      data = { ...data, participants: [data.participants[0], data.participants[0]] };
+    }
+
+    setUserChatData(data);
   };
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

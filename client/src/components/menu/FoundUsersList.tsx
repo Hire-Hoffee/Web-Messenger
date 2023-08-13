@@ -44,4 +44,5 @@ const StyledList = styled(List)(({ theme }) => ({
   height: "calc(99vh - 85px)",
   backgroundColor: theme.palette.primary.main,
   borderRadius: "15px",
+  zIndex: "2",
 }));

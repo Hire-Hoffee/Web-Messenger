@@ -47,6 +47,7 @@ export default function MenuSlideBar({ userAvatar, username }: Props) {
 
   const logoutHandler = () => {
     localStorage.removeItem("username");
+    localStorage.removeItem("accessToken");
     router.push("/auth/login");
   };
 
@@ -125,8 +126,11 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-switchBase": {
     color: theme.palette.primary.dark,
   },
-  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+  "& .Mui-checked + .MuiSwitch-track": {
     backgroundColor: theme.palette.primary.dark,
+  },
+  "& .Mui-checked": {
+    color: theme.palette.primary.dark,
   },
   "& .MuiSwitch-track": {
     backgroundColor: theme.palette.primary.dark,
