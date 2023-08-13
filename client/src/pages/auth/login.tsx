@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, Paper, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { QuestionAnswer } from "@mui/icons-material";
-import { useMutation } from "@apollo/client";
+import { useMutation, ApolloError } from "@apollo/client";
 import { useRouter } from "next/router";
 import Joi from "joi";
 
@@ -48,9 +48,12 @@ export default function Login({}: Props) {
 
       localStorage.setItem("username", data.username);
       localStorage.setItem("accessToken", token.data.userLogin);
-    } catch (error: any) {
-      setErrorMessage(error.networkError?.result.errors[0].message);
-      return;
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        setErrorMessage(error.message);
+        return;
+      }
+      setErrorMessage("Unexpected error");
     }
 
     setUserData({
@@ -73,6 +76,7 @@ export default function Login({}: Props) {
           height: "initial",
           "&:hover": { bgcolor: "primary.light" },
           padding: "50px",
+          cursor: "unset",
         }}
       >
         <Box

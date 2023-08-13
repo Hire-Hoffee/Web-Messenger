@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Typography, Paper, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { QuestionAnswer } from "@mui/icons-material";
-import { useMutation } from "@apollo/client";
+import { ApolloError, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import Joi from "joi";
 
-import { UserData } from "@/types";
+import { UserRegisterData } from "@/types";
 import { REGISTER_USER } from "@/graphql/mutations";
 
 type Props = {};
 
 export default function Login({}: Props) {
-  const [userData, setUserData] = useState<UserData>({
+  const [userData, setUserData] = useState<UserRegisterData>({
     email: "",
     password: "",
     username: "",
@@ -23,8 +23,8 @@ export default function Login({}: Props) {
   const [registerUser] = useMutation(REGISTER_USER);
   const router = useRouter();
 
-  const dataValidator = (data: UserData) => {
-    const validationSchema = Joi.object<UserData>({
+  const dataValidator = (data: UserRegisterData) => {
+    const validationSchema = Joi.object<UserRegisterData>({
       email: Joi.string()
         .email({ tlds: { allow: false } })
         .required(),
@@ -39,17 +39,20 @@ export default function Login({}: Props) {
 
   const handleInput = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    key: keyof UserData
+    key: keyof UserRegisterData
   ) => {
     setUserData({ ...userData, [key]: event.target.value.trim() });
   };
 
-  const userRegistrationHandler = async (data: UserData) => {
+  const userRegistrationHandler = async (data: UserRegisterData) => {
     try {
       await registerUser({ variables: { ...data } });
-    } catch (error: any) {
-      setErrorMessage(error.networkError?.result.errors[0].message);
-      return;
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        setErrorMessage(error.message);
+        return;
+      }
+      setErrorMessage("Unexpected error");
     }
 
     setUserData({

@@ -1,3 +1,10 @@
+type UserRegisterData = {
+  email: string;
+  username: string;
+  password: string;
+  avatar: string;
+};
+
 type UserLoggedData = {
   email: string;
   username: string;
@@ -42,4 +49,5 @@ export type {
   SendedMessageData,
   ReceivedMessageData,
   foundUsersData,
+  UserRegisterData,
 };
