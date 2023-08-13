@@ -2,14 +2,16 @@ import { Button, InputBase, Paper } from "@mui/material";
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { Send } from "@mui/icons-material";
+import { UserChatData } from "@/types";
 
 type Props = {
   message: string;
   handlerBtn: Function;
   handlerInput: Function;
+  chatData: UserChatData | undefined;
 };
 
-export default function MessageInput({ message, handlerBtn, handlerInput }: Props) {
+export default function MessageInput({ message, handlerBtn, handlerInput, chatData }: Props) {
   return (
     <CustomPaper>
       <CustomInput
@@ -19,8 +21,10 @@ export default function MessageInput({ message, handlerBtn, handlerInput }: Prop
         fullWidth
         placeholder="Type here..."
         value={message}
+        disabled={chatData ? false : true}
       />
       <CustomButton
+        disabled={chatData ? false : true}
         onClick={() => {
           handlerBtn(message);
         }}

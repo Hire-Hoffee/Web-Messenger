@@ -128,6 +128,7 @@ export default function Home() {
 
     socket.on("chat_deleted", (data: { id: number; createdAt: Date }) => {
       setUserChats((prev) => prev?.filter((chat) => chat.id !== data.id));
+      setUserChatData(undefined);
     });
 
     socket.on("messages_deleted", (data: number) => {
@@ -146,7 +147,12 @@ export default function Home() {
       </Grid>
       <Grid item md={9} sm={8} sx={{ position: "relative" }}>
         <ChatScreen userChatData={userChatData} />
-        <MessageInput message={message} handlerInput={handleInput} handlerBtn={sendMessage} />
+        <MessageInput
+          chatData={userChatData}
+          message={message}
+          handlerInput={handleInput}
+          handlerBtn={sendMessage}
+        />
       </Grid>
     </Grid>
   );
