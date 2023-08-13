@@ -21,6 +21,7 @@ export default function ChatScreen({ userChatData }: Props) {
               : userChatData.participants[0].username
           }
           chatId={userChatData.id}
+          chatUsers={userChatData.participants}
         />
       ) : (
         ""

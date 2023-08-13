@@ -45,26 +45,29 @@ export default function (socket: Socket) {
     socket.nsp.to(data.secondUsername).emit("created_chat", chat);
   });
 
-  socket.on("delete_chat", async (data: number) => {
-    const findChat = await prisma.chat.findUnique({ where: { id: data } });
+  socket.on("delete_chat", async (data: { chatId: number; users: [string, string] }) => {
+    const findChat = await prisma.chat.findUnique({ where: { id: data.chatId } });
 
     if (!findChat) {
       return;
     }
 
-    const deletedChat = await prisma.chat.delete({ where: { id: data } });
-    socket.emit("chat_deleted", deletedChat);
+    const deletedChat = await prisma.chat.delete({ where: { id: data.chatId } });
+    socket.nsp.to(data.users[0]).emit("chat_deleted", deletedChat);
+    socket.nsp.to(data.users[1]).emit("chat_deleted", deletedChat);
   });
 
-  socket.on("delete_messages", async (data: number) => {
-    const findMessages = await prisma.message.findMany({ where: { chatId: data } });
+  socket.on("delete_messages", async (data: { chatId: number; users: [string, string] }) => {
+    const findMessages = await prisma.message.findMany({ where: { chatId: data.chatId } });
 
     if (!findMessages || findMessages.length === 0) {
       return;
     }
 
-    await prisma.message.deleteMany({ where: { chatId: data } });
-    socket.emit("messages_deleted", data);
+    await prisma.message.deleteMany({ where: { chatId: data.chatId } });
+
+    socket.nsp.to(data.users[0]).emit("messages_deleted", data.chatId);
+    socket.nsp.to(data.users[1]).emit("messages_deleted", data.chatId);
   });
 
   socket.on("change_theme", async (data: { theme: string; user: string }) => {

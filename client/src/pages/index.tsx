@@ -106,8 +106,9 @@ export default function Home() {
 
   useEffect(() => {
     socket.on("message", (data: ReceivedMessageData) => {
+      data.createdAt = String(Date.now());
+
       if (userChatData) {
-        data.createdAt = String(Date.now());
         setUserChatData({ ...userChatData, messages: [...userChatData.messages, data] });
       }
 

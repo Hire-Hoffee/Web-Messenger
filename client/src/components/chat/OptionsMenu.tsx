@@ -6,20 +6,21 @@ import socket from "@/socketio";
 
 type Props = {
   chatId: number;
+  chatUsers: { id: number; username: string; avatar: string; isOnline: boolean }[];
 };
 
-export default function OptionsMenu({ chatId }: Props) {
+export default function OptionsMenu({ chatId, chatUsers }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: any) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
-  const deleteChatHandler = (chatId: number) => {
-    socket.emit("delete_chat", chatId);
+  const deleteChatHandler = (chatId: number, users: [string, string]) => {
+    socket.emit("delete_chat", { chatId, users });
   };
-  const deleteMessagesHandler = (chatId: number) => {
-    socket.emit("delete_messages", chatId);
+  const deleteMessagesHandler = (chatId: number, users: [string, string]) => {
+    socket.emit("delete_messages", { chatId, users });
   };
 
   return (
@@ -47,7 +48,7 @@ export default function OptionsMenu({ chatId }: Props) {
           sx={{ transition: "0.2s", "&:hover": { borderRadius: "5px", transition: "0.2s" } }}
           onClick={() => {
             handleClose();
-            deleteMessagesHandler(chatId);
+            deleteMessagesHandler(chatId, [chatUsers[0].username, chatUsers[1].username]);
           }}
         >
           Delete messages
@@ -56,7 +57,7 @@ export default function OptionsMenu({ chatId }: Props) {
           sx={{ transition: "0.2s", "&:hover": { borderRadius: "5px", transition: "0.2s" } }}
           onClick={() => {
             handleClose();
-            deleteChatHandler(chatId);
+            deleteChatHandler(chatId, [chatUsers[0].username, chatUsers[1].username]);
           }}
         >
           Delete chat

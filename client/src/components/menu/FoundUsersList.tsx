@@ -26,8 +26,8 @@ export default function FoundUsersList({ users, handler }: Props) {
 }
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.light,
-  borderRadius: "15px",
+  backgroundColor: theme.palette.primary.dark,
+  borderRadius: "10px",
   boxShadow: "4px 4px 8px 0px rgba(34, 60, 80, 0.2)",
   marginBottom: "5px",
   transition: "0.2s",
@@ -40,7 +40,6 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 
 const StyledList = styled(List)(({ theme }) => ({
   position: "absolute",
-  zIndex: "9999",
   width: "100%",
   height: "calc(99vh - 85px)",
   backgroundColor: theme.palette.primary.main,
