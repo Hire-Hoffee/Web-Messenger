@@ -28,22 +28,28 @@ export default function ChatCard({ messages, participants }: UserChatData) {
         <Avatar alt="avatar" src={userAvatar} sx={{ width: 65, height: 65 }} />
         <FlexBox>
           <CustomBox>
-            <Typography component="h3" sx={{ fontSize: "16px" }}>
+            <Typography fontSize="14px" fontWeight="bold">
               {username}
             </Typography>
-            <Typography sx={{ fontSize: "14px" }}>
-              {messages[0]?.content || "No messages"}
-            </Typography>
-          </CustomBox>
-          <CustomBox sx={{ alignItems: "center" }}>
-            <Typography sx={{ fontSize: "12px" }}>
+            <Typography fontSize="12px">
               {messages[0]?.createdAt
                 ? new Date(Number(messages[0]?.createdAt))
                     .toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })
                     .toString()
                 : ""}
             </Typography>
-            <Circle sx={{ fontSize: "18px", color: "primary.dark" }} />
+          </CustomBox>
+          <CustomBox>
+            <Typography
+              sx={{
+                fontSize: "14px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {messages[0]?.content || "No messages"}
+            </Typography>
           </CustomBox>
         </FlexBox>
       </Box>
@@ -53,16 +59,15 @@ export default function ChatCard({ messages, participants }: UserChatData) {
 
 const FlexBox = styled(Box)(({ theme }) => ({
   display: "flex",
-  marginLeft: "15px",
+  flexDirection: "column",
   justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%",
+  width: "calc(100% - 75px)",
   height: "100%",
+  marginLeft: "10px",
 }));
 
 const CustomBox = styled(Box)(({ theme }) => ({
-  height: "100%",
   display: "flex",
-  flexDirection: "column",
   justifyContent: "space-between",
+  alignItems: "center",
 }));

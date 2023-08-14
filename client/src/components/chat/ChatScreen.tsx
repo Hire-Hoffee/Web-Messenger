@@ -22,6 +22,11 @@ export default function ChatScreen({ userChatData }: Props) {
           }
           chatId={userChatData.id}
           chatUsers={userChatData.participants}
+          isOnline={
+            userChatData.participants[0].username === localStorage.getItem("username")
+              ? userChatData.participants[1].isOnline
+              : userChatData.participants[0].isOnline
+          }
         />
       ) : (
         ""
@@ -32,7 +37,7 @@ export default function ChatScreen({ userChatData }: Props) {
           userChatData.messages.length === 0 ? (
             <Typography
               sx={{ textAlign: "center", marginTop: "150px", color: "primary.dark" }}
-              variant="h4"
+              variant="h5"
             >
               No messages
             </Typography>

@@ -5,8 +5,28 @@ import { prisma } from "@/database/db";
 export default function (socket: Socket) {
   console.log("Client connected");
 
-  socket.on("join_own_room", (room: string) => {
+  socket.on("disconnecting", async () => {
+    const room = [...socket.rooms][1];
+    if (room) {
+      await prisma.user.update({
+        where: { username: room },
+        data: {
+          isOnline: false,
+        },
+      });
+    }
+  });
+
+  socket.on("join_own_room", async (room: string) => {
     socket.join(room);
+    if (room) {
+      await prisma.user.update({
+        where: { username: room },
+        data: {
+          isOnline: true,
+        },
+      });
+    }
   });
 
   socket.on("message", async (data: { msg: MessageData; room: string[] }) => {
