@@ -9,7 +9,7 @@ import socketHandler from "./socketio/handler";
 
 const app = express();
 const httpServer = http.createServer(app);
-const io = socketInit(httpServer, process.env.SERVER_URL as string);
+const io = socketInit(httpServer, process.env.CLIENT_URL as string);
 const port = process.env.PORT || 4000;
 
 app.use(cors());

@@ -5,7 +5,7 @@ declare global {
       SECRET_ACCESS: string;
       SECRET_REFRESH: string;
       DATABASE_URL: string;
-      SERVER_URL: string;
+      CLIENT_URL: string;
     }
   }
 }
