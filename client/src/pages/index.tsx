@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useLazyQuery } from "@apollo/client";
 import type { QueryResult, OperationVariables } from "@apollo/client";
@@ -21,10 +21,15 @@ export default function Home() {
   const [userChatData, setUserChatData] = useState<UserChatData>();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [message, setMessage] = useState<string>("");
+  const [gridMd, setGridMd] = useState<[number, number]>([2.95, 8.95]);
+  const [gridSm, setGridSm] = useState<[number, number]>([4, 8]);
 
   const [getUserInfo] = useLazyQuery(GET_USER_INFO);
   const [getUserChats] = useLazyQuery(GET_USER_CHATS);
   const [getChatData] = useLazyQuery(GET_CHAT_DATA);
+
+  const fullGrid = useRef<HTMLDivElement>(null);
+  const gridItem = useRef<HTMLDivElement>(null);
 
   const getChatDataHandler = async (chatId: number | undefined) => {
     const chatData: QueryResult<{ getChatData: UserChatData }, OperationVariables> =
@@ -147,13 +152,49 @@ export default function Home() {
     });
   }, [userChatData, userChats]);
 
+  const handleMouseMove = useCallback((e: any) => {
+    const absVal = Math.abs(e.movementX / 200);
+    if (e.movementX > 0) {
+      setGridMd([(gridMd[0] += absVal), (gridMd[1] -= absVal)]);
+      setGridSm([(gridSm[0] += absVal), (gridSm[1] -= absVal)]);
+    }
+    if (e.movementX < 0) {
+      setGridMd([(gridMd[0] -= absVal), (gridMd[1] += absVal)]);
+      setGridSm([(gridSm[0] -= absVal), (gridSm[1] += absVal)]);
+    }
+    return;
+  }, []);
+
+  const addListeners = (e: React.MouseEvent, item: HTMLDivElement | null) => {
+    e.currentTarget.addEventListener("mousemove", handleMouseMove);
+    item?.addEventListener("mousemove", handleMouseMove);
+  };
+  const removeListeners = (e: React.MouseEvent, item: HTMLDivElement | null) => {
+    e.currentTarget.removeEventListener("mousemove", handleMouseMove);
+    item?.removeEventListener("mousemove", handleMouseMove);
+  };
+
   return (
-    <Grid container spacing={1} padding={0.5}>
-      <Grid item md={3} sm={4}>
+    <Grid
+      container
+      padding={0.5}
+      ref={fullGrid}
+      onMouseUp={(e) => removeListeners(e, gridItem.current)}
+    >
+      <Grid item md={gridMd[0]} sm={gridSm[0]}>
         <SearchChatBar userInfo={userInfo} />
         <ListOfChats userChats={userChats} handler={getChatDataHandler} />
       </Grid>
-      <Grid item md={9} sm={8} sx={{ position: "relative" }}>
+      <Grid
+        item
+        md={0.1}
+        sm={0.1}
+        sx={{ cursor: "col-resize" }}
+        ref={gridItem}
+        onMouseDown={(e) => addListeners(e, fullGrid.current)}
+        onMouseUp={(e) => removeListeners(e, fullGrid.current)}
+      ></Grid>
+      <Grid item md={gridMd[1]} sm={gridSm[1]} sx={{ position: "relative" }}>
         <ChatScreen userChatData={userChatData} />
         <MessageInput
           chatData={userChatData}
