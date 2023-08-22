@@ -12,4 +12,4 @@
    - CLIENT_URL = `http://localhost:3000`
 4. Run a database migration with `cd ./server; npx prisma migrate dev --name init`
 5. Start both `client` and `server` servers using the `npm run dev` command in the `./client` and `./server` folders
-6. The project will be available at `http://localhost:4000`
+6. The project will be available at `http://localhost:3000`
