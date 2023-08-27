@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4000");
+const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!);
 
 socket.on("connect", () => console.log("Server connected"));
 
