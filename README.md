@@ -1,5 +1,12 @@
 # Web Messenger
 
+## A Web-Messenger app in NextJS and GraphQL
+
+<br/>
+
+![Dark theme](https://i.imgur.com/w616efa.png "Dark theme")
+![Light theme menu](https://i.imgur.com/xfzh5Wy.png "Light theme menu")
+
 ### Local Setup
 
 1. Clone repository `git clone https://github.com/Hire-Hoffee/Web-Messenger.git`
