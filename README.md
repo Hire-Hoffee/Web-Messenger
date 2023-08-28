@@ -1,6 +1,6 @@
 # Web Messenger
 
-## A Web-Messenger app in NextJS and GraphQL
+### A Web-Messenger app in NextJS and GraphQL
 
 <br/>
 
