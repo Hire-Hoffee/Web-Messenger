@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "start": "ts-node -r tsconfig-paths/register src/index.ts",
-    "build": "tsc -w --copy-files && tsc-alias"
+    "build": "tsc && tsc-alias"
   },
   "author": "",
   "license": "ISC",
