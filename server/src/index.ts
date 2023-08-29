@@ -1,6 +1,9 @@
 import express from "express";
 import http from "http";
 import cors from "cors";
+import path from "path";
+import history from "connect-history-api-fallback";
+import logger from "morgan";
 import "dotenv/config";
 
 import graphqlInit from "./graphql";
@@ -14,6 +17,13 @@ const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.json());
+app.use(logger("dev"));
+app.use(history());
+app.use(express.static(path.join(__dirname, "..", "out")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "out", "index.html"));
+});
 
 graphqlInit(httpServer, app, "/graphql");
 io.on("connection", (socket) => socketHandler(socket));
