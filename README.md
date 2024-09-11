@@ -25,7 +25,7 @@ Node.js, Express.js, Apollo Server, Prisma ORM, SQLite, Socket.io, Bcrypt, JWT
 
 ### Project Operation
 
-1. User interacts with the user interface created with Next.js and Material UI.
+1. User interacts with the interface created with Next.js and Material UI.
 2. The client sends a GraphQL query to the server via Apollo Client.
 3. The server processes the query using Apollo Server and Prisma ORM to interact with the database.
 4. The server returns the data to the client in JSON format.
