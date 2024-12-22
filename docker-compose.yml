@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  front:
+    build:
+      context: ./client
+    volumes:
+      - frontend-build:/build
+
+  back:
+    build:
+      context: ./server
+    volumes:
+      - frontend-build:/build
+      - ./server/src/database:/server/src/database
+    ports:
+      - "7005:7005"
+    depends_on:
+      - msg-front
+    deploy:
+      resources:
+        limits:
+          memory: 120M
+    restart: on-failure
+
+volumes:
+  frontend-build:

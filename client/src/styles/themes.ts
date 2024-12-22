@@ -1,11 +1,24 @@
 import { createTheme } from "@mui/material";
-import { Roboto } from "next/font/google";
+import localFont from "next/font/local";
 
-const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["Helvetica", "Arial", "sans-serif"],
+const roboto = localFont({
+  src: [
+    {
+      path: "../assets/font/Roboto-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../assets/font/Roboto-Italic.ttf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../assets/font/Roboto-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
 });
 
 const lightTheme = createTheme({
