@@ -45,3 +45,18 @@ Node.js, Express.js, Apollo Server, Prisma ORM, SQLite, Socket.io, Bcrypt, JWT
 4. Run a database migration with `cd ./server; npx prisma migrate dev --name init`
 5. Start both `client` and `server` servers using the `npm run dev` command in the `./client` and `./server` folders
 6. The project will be available at `http://localhost:3000`
+
+### or with docker
+
+1. Clone repository `git clone https://github.com/Hire-Hoffee/Web-Messenger.git`
+2. Add the `.env` file to the `./server` folder with the following properties:
+   - PORT = `7005`
+   - SECRET_ACCESS = `DUBnNNBLDn3jTrq6uXoKGD2ZWWQkFfaHW`
+   - SECRET_REFRESH = `soxXpor9R2skFIeQ64ZCl0wUClka6yR4`
+   - DATABASE_URL = `"file:./dev.db"`
+   - CLIENT_URL = `http://localhost:7005`
+3. Add the `.env.local` file to the `./client` folder with the following properties:
+   - NEXT_PUBLIC_SERVER_URL = `http://localhost:7005`
+4. `docker-compose build`
+5. `docker-compose up -d`
+6. The project will be available at `http://localhost:7005`
