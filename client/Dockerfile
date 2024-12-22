@@ -14,4 +14,4 @@ FROM node:22-alpine
 
 COPY --from=builder /server/out /out
 
-CMD cp -r /out /build
+CMD ["cp", "-r", "/out", "/build"]
