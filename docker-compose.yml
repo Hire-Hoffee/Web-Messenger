@@ -10,9 +10,9 @@ services:
       - frontend-build:/build
 
   back:
+    image: messenger-back
+    container_name: messenger-back-container
     build:
-      image: messenger-back
-      container_name: messenger-back-container
       context: ./server
     volumes:
       - frontend-build:/build
@@ -20,7 +20,7 @@ services:
     ports:
       - "7005:7005"
     depends_on:
-      - msg-front
+      - front
     deploy:
       resources:
         limits:
