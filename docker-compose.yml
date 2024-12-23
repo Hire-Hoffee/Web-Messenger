@@ -2,6 +2,8 @@ version: "3.8"
 
 services:
   front:
+    image: messenger-front
+    container_name: messenger-front-container
     build:
       context: ./client
     volumes:
@@ -9,6 +11,8 @@ services:
 
   back:
     build:
+      image: messenger-back
+      container_name: messenger-back-container
       context: ./server
     volumes:
       - frontend-build:/build
