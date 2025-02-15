@@ -50,13 +50,13 @@ Node.js, Express.js, Apollo Server, Prisma ORM, SQLite, Socket.io, Bcrypt, JWT
 
 1. Clone repository `git clone https://github.com/Hire-Hoffee/Web-Messenger.git`
 2. Add the `.env` file to the `./server` folder with the following properties:
-   - PORT = `7005`
+   - PORT = `7004`
    - SECRET_ACCESS = `DUBnNNBLDn3jTrq6uXoKGD2ZWWQkFfaHW`
    - SECRET_REFRESH = `soxXpor9R2skFIeQ64ZCl0wUClka6yR4`
    - DATABASE_URL = `"file:./dev.db"`
-   - CLIENT_URL = `http://localhost:7005`
+   - CLIENT_URL = `http://localhost:7004`
 3. Add the `.env.local` file to the `./client` folder with the following properties:
-   - NEXT_PUBLIC_SERVER_URL = `http://localhost:7005`
+   - NEXT_PUBLIC_SERVER_URL = `http://localhost:7004`
 4. `docker-compose build`
 5. `docker-compose up -d`
-6. The project will be available at `http://localhost:7005`
+6. The project will be available at `http://localhost:7004`

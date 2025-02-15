@@ -12,7 +12,7 @@ COPY . .
 
 RUN npx prisma generate
 
-EXPOSE 7005
+EXPOSE 7004
 
 CMD ["/bin/sh", "-c", \
   "if [ ! -d 'src/database/migrations' ]; then npx prisma migrate dev --name init && npx prisma migrate deploy; fi \

@@ -18,7 +18,7 @@ services:
       - frontend-build:/build
       - ./server/src/database:/server/src/database
     ports:
-      - "7005:7005"
+      - "7004:7004"
     depends_on:
       - front
     deploy:
